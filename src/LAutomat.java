@@ -76,7 +76,7 @@ public class LAutomat {
     }
 
     /**
-     * Trenutna stanja proširi stanjima epsilon prijalaza.
+     * Trenutna stanja proširi stanjima epsilon prijelaza.
      */
     private void EOkruzenje() {
 
