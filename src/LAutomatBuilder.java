@@ -1,10 +1,11 @@
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Razred koji služi za laku izgradnju LAutomata.
  */
 public class LAutomatBuilder {
-    private Map<Integer, Node> nodovi;
+    private Map<Integer, Node> nodovi = new HashMap<>();
     private Node pocetnoStanje;
     private Node prihvatljivoStanje;
 
@@ -61,7 +62,7 @@ public class LAutomatBuilder {
     private Node getNode(int oznaka) {
         Node temp = nodovi.get(oznaka);
         if(temp == null) {
-            temp = new Node();
+            temp = new Node(oznaka);
             nodovi.put(oznaka, temp);
         }
         return temp;

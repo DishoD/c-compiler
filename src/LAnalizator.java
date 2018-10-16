@@ -47,9 +47,10 @@ public class LAnalizator {
      * @param automat automat koji se dodaje
      */
     public void dodajAutomat(String stanje, LAutomat automat) {
-        automati.merge(stanje, new ArrayList<>(), new BiFunction<List<LAutomat>, List<LAutomat>, List<LAutomat>>() {
+        automati.putIfAbsent(stanje, new ArrayList<>());
+        automati.compute(stanje, new BiFunction<String, List<LAutomat>, List<LAutomat>>() {
             @Override
-            public List<LAutomat> apply(List<LAutomat> lAutomats, List<LAutomat> lAutomats2) {
+            public List<LAutomat> apply(String s, List<LAutomat> lAutomats) {
                 lAutomats.add(automat);
                 return lAutomats;
             }
