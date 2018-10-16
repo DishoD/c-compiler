@@ -1,8 +1,6 @@
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 public class LAutomat {
 
@@ -25,10 +23,8 @@ public class LAutomat {
 
     private Node pocetnoStanje;
     private Node prihvatljivoStanje;
-
     private Set<Node> trenutnaStanja = new HashSet<>();
     private LAutomatStatus status;
-
     private List<Akcija> akcije = new ArrayList<>();
 
     /**
@@ -51,13 +47,10 @@ public class LAutomat {
      * Ako je automat već bio pokrenut, resetira se opet na početno stanje + e-okruženje.
      */
     public void pokreniAutomat(){
-        System.out.println("Automat je počeo s radom: ");
-        System.out.println("---------------------------");
         status = LAutomatStatus.RADI;
-        trenutnaStanja =  new HashSet<Node>(); // resetiranje trenutnog skupa stanja
+        trenutnaStanja.clear();
         trenutnaStanja.add(pocetnoStanje);
         EOkruzenje();
-
     }
 
     /**
@@ -68,7 +61,6 @@ public class LAutomat {
      */
     public LAutomatStatus prijelaz(char znak) {
         Set<Node> novaStanja = new HashSet<>();
-        boolean nemaPrijelaza = true;
 
         for(Node pojedinoStanje : trenutnaStanja){ // dodavanje stanja u koja idemo prijelazima automata
           List<Node> temp = pojedinoStanje.getPrijelazi(znak);
@@ -84,7 +76,7 @@ public class LAutomat {
 
         EOkruzenje();  // modificiramo trenutnaStanja, proširivanje EOkruženjem
         status =  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
-        return  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
+        return status;
 
     }
 
@@ -101,23 +93,38 @@ public class LAutomat {
     }
 
     /**
-     * Trenutna stanja proširi stanjima epsilon prijelaza.
+     * Trenutna stanja proširi stanjima epsilon prijelaza.  IZDOKUMENTIRAT
      */
     private void EOkruzenje() {
 
-        HashSet<Node> result = new HashSet<>();
-        result.addAll(trenutnaStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
+        List<Node>  stogStanja = new LinkedList<>(trenutnaStanja); // u pocetku su na stoga sva stanja koja cine skup trenutnih
+        HashSet<Node> obiljezenaStanja = new HashSet<>(); // u obiljezenim stanjima ce biti epsilon okruzenje
+        /* STARI NAČIN
+         HashSet<Node> rezultat = new HashSet<>();
+        rezultat.addAll(trenutnaStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
 
-        int setSize = result.size();
+        int setSize = rezultat.size();
 
         while(true){
-            for(Node stanje : new HashSet<Node>(result)){
-                result.addAll(stanje.getEPrijelazi());
+            for(Node stanje : new HashSet<Node>(rezultat)){
+                rezultat.addAll(stanje.getEPrijelazi());
             }
-            if(result.size() == setSize) break;
-            setSize = result.size();
+            if(rezultat.size() == setSize) break;
+            setSize = rezultat.size();
         }
 
-        trenutnaStanja = result;
+        trenutnaStanja = rezultat;*/
+        while(!stogStanja.isEmpty()){
+            Node temp = stogStanja.get(stogStanja.size() - 1); // skidamo stanje s "vrha" stoga
+            stogStanja.remove(stogStanja.size() - 1);
+                for(Node pojedinoStanje : temp.getEPrijelazi()){ // iteriramo kroz skup stanja u koji ide eps-prijelazima
+                    if(!obiljezenaStanja.contains(pojedinoStanje)){
+                        obiljezenaStanja.add(temp); // ako nije bio obilježen, postaje obilježen
+                        stogStanja.add(temp);
+                    }
+                }
+            }
+        trenutnaStanja = obiljezenaStanja;
+
     }
 }
