@@ -1,7 +1,11 @@
+import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Razred koji služi za laku izgradnju LAutomata.
+ */
 public class LAutomatBuilder {
-    private Map<Integer, Node> nodovi;
+    private Map<Integer, Node> nodovi = new HashMap<>();
     private Node pocetnoStanje;
     private Node prihvatljivoStanje;
 
@@ -12,8 +16,9 @@ public class LAutomatBuilder {
      * @param odrediste odredišno stanje prijelaza
      * @param znak znak prijelaza
      */
-    public void dodajPrijelaz(int izvor, int odrediste, char znak){
-
+    public LAutomatBuilder dodajPrijelaz(int izvor, int odrediste, char znak){
+        getNode(izvor).dodajPrijelaz(znak, getNode(odrediste));
+        return this;
     }
 
     /**
@@ -22,8 +27,9 @@ public class LAutomatBuilder {
      * @param izvor izvorišno stanje prijelaza
      * @param odrediste odredišno stanje prijelaza
      */
-    public void dodajEPrijelaz(int izvor, int odrediste){
-
+    public LAutomatBuilder dodajEPrijelaz(int izvor, int odrediste){
+        getNode(izvor).dodajEPrijelaz(getNode(odrediste));
+        return this;
     }
 
     /**
@@ -32,7 +38,7 @@ public class LAutomatBuilder {
      * @param oznaka oznaka stanja
      */
     public void setPocetnoStanje(int oznaka){
-
+        pocetnoStanje = getNode(oznaka);
     }
 
     /**
@@ -41,7 +47,7 @@ public class LAutomatBuilder {
      * @param oznaka oznaka stanja
      */
     public void setPrihvatljivoStanje(int oznaka){
-
+        prihvatljivoStanje = getNode(oznaka);
     }
 
     /**
@@ -50,6 +56,15 @@ public class LAutomatBuilder {
      * @return izgrađeni automat
      */
     public LAutomat getLAutomat() {
-        return null;
+        return new LAutomat(pocetnoStanje, prihvatljivoStanje);
+    }
+
+    private Node getNode(int oznaka) {
+        Node temp = nodovi.get(oznaka);
+        if(temp == null) {
+            temp = new Node(oznaka);
+            nodovi.put(oznaka, temp);
+        }
+        return temp;
     }
 }

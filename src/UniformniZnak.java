@@ -17,4 +17,10 @@ public class UniformniZnak {
      * za ovaj uniformni znak
      */
     public String grupiraniZnakovi;
+
+    public UniformniZnak(String token, int redak, String grupiraniZnakovi) {
+        this.token = token;
+        this.redak = redak;
+        this.grupiraniZnakovi = grupiraniZnakovi;
+    }
 }
