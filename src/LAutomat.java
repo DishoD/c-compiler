@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +51,12 @@ public class LAutomat {
      * Ako je automat već bio pokrenut, resetira se opet na početno stanje + e-okruženje.
      */
     public void pokreniAutomat(){
+        System.out.println("Automat je počeo s radom: ");
+        System.out.println("---------------------------");
+        status = LAutomatStatus.RADI;
+        trenutnaStanja =  new HashSet<Node>(); // resetiranje trenutnog skupa stanja
+        trenutnaStanja.add(pocetnoStanje);
+        trenutnaStanja = EOkruzenje(trenutnaStanja);
 
     }
 
@@ -60,7 +67,25 @@ public class LAutomat {
      * @return status automata nakon izvršenih prijelaza
      */
     public LAutomatStatus prijelaz(char znak) {
-        return null;
+        Set<Node> novaStanja = new HashSet<>();
+        boolean nemaPrijelaza = true;
+
+        for(Node pojedinoStanje : trenutnaStanja){ // dodavanje stanja u koja idemo prijelazima automata
+          List<Node> temp = pojedinoStanje.getPrijelazi(znak);
+          if(temp == null) continue;
+          novaStanja.addAll(temp);
+        }
+
+        trenutnaStanja = novaStanja;
+        if(trenutnaStanja.isEmpty()){
+            this.status = LAutomatStatus.STOPIRAN;
+            return LAutomatStatus.STOPIRAN;
+        }
+
+        trenutnaStanja = EOkruzenje(trenutnaStanja);  // modificiramo trenutnaStanja, proširivanje EOkruženjem
+        status =  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
+        return  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
+
     }
 
     public LAutomatStatus getStatus() {
@@ -78,7 +103,38 @@ public class LAutomat {
     /**
      * Trenutna stanja proširi stanjima epsilon prijelaza.
      */
-    private void EOkruzenje() {
+    private HashSet<Node> EOkruzenje(Set<Node> ulazniSkupStanja) {
+        HashSet<Node> result = new HashSet<>();
 
+        result.addAll(ulazniSkupStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
+
+        for(Node pojedinoStanje : ulazniSkupStanja){
+            for(Node EOkruzenjeJednogStanja : pojedinoStanje.getEPrijelazi()){
+                result.add(EOkruzenjeJednogStanja); // HashSet neće dodati duplikate
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Za zadano stanje nalazi njegovo epsilon okruženje
+     */
+
+    private HashSet<Node> EOkruzenjeStanja(Node ulaznoStanje) { // rekurzivna funkcija
+        if (ulaznoStanje.getEPrijelazi().isEmpty()) return null; // uvjet zaustavljanja
+
+        HashSet<Node> result = new HashSet<>();
+        result.add(ulaznoStanje);
+        result.addAll(ulaznoStanje.getEPrijelazi());
+
+        HashSet<Node> temp = new HashSet<>();
+        for (Node stanje : ulaznoStanje.getEPrijelazi()) {
+            temp.addAll(EOkruzenjeStanja(stanje));
+        }
+
+
+        result.addAll(temp);
+        return result;
     }
 }
