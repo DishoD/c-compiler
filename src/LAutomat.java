@@ -56,7 +56,7 @@ public class LAutomat {
         status = LAutomatStatus.RADI;
         trenutnaStanja =  new HashSet<Node>(); // resetiranje trenutnog skupa stanja
         trenutnaStanja.add(pocetnoStanje);
-        trenutnaStanja = EOkruzenje(trenutnaStanja);
+        EOkruzenje();
 
     }
 
@@ -82,7 +82,7 @@ public class LAutomat {
             return LAutomatStatus.STOPIRAN;
         }
 
-        trenutnaStanja = EOkruzenje(trenutnaStanja);  // modificiramo trenutnaStanja, proširivanje EOkruženjem
+        EOkruzenje();  // modificiramo trenutnaStanja, proširivanje EOkruženjem
         status =  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
         return  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
 
@@ -103,38 +103,21 @@ public class LAutomat {
     /**
      * Trenutna stanja proširi stanjima epsilon prijelaza.
      */
-    private HashSet<Node> EOkruzenje(Set<Node> ulazniSkupStanja) {
+    private void EOkruzenje() {
+
         HashSet<Node> result = new HashSet<>();
+        result.addAll(trenutnaStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
 
-        result.addAll(ulazniSkupStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
+        int setSize = result.size();
 
-        for(Node pojedinoStanje : ulazniSkupStanja){
-            for(Node EOkruzenjeJednogStanja : pojedinoStanje.getEPrijelazi()){
-                result.add(EOkruzenjeJednogStanja); // HashSet neće dodati duplikate
+        while(true){
+            for(Node stanje : new HashSet<Node>(result)){
+                result.addAll(stanje.getEPrijelazi());
             }
+            if(result.size() == setSize) break;
+            setSize = result.size();
         }
 
-        return result;
-    }
-
-    /**
-     * Za zadano stanje nalazi njegovo epsilon okruženje
-     */
-
-    private HashSet<Node> EOkruzenjeStanja(Node ulaznoStanje) { // rekurzivna funkcija
-        if (ulaznoStanje.getEPrijelazi().isEmpty()) return null; // uvjet zaustavljanja
-
-        HashSet<Node> result = new HashSet<>();
-        result.add(ulaznoStanje);
-        result.addAll(ulaznoStanje.getEPrijelazi());
-
-        HashSet<Node> temp = new HashSet<>();
-        for (Node stanje : ulaznoStanje.getEPrijelazi()) {
-            temp.addAll(EOkruzenjeStanja(stanje));
-        }
-
-
-        result.addAll(temp);
-        return result;
+        trenutnaStanja = result;
     }
 }
