@@ -64,6 +64,10 @@ public class LAnalizator {
         return tablicaUniformnihZnakova;
     }
 
+    private void umetniNoviUniformniZnak(String token, int brojRetka, String grupiraniZnakovi) {
+        tablicaUniformnihZnakova.add(new UniformniZnak(token, brojRetka, grupiraniZnakovi));
+    }
+
     private AkcijaOdbaci getAkcijaOdbaci(){
         return ODBACI;
     }
@@ -166,7 +170,7 @@ public class LAnalizator {
     /**
      * Omogućava laku izgradnju akcije (niza argumenata).
      */
-    private static class BuilderAkcija {
+    public static class BuilderAkcija {
         private LAnalizator analizator;
         private List<Akcija> akcije;
 
