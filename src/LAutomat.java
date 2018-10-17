@@ -43,17 +43,18 @@ public class LAutomat {
         this.status = LAutomatStatus.STOPIRAN;
     }
 
-    //---------------------------------------TODO---------------------------------------------------
-
     /**
-     * Pokreće automat. Status mu postaje 'RADI'. Trenutna stanja su e-okruženje početnog stanja.
+     * Pokreće automat. Trenutna stanja su e-okruženje početnog stanja.
      * Ako je automat već bio pokrenut, resetira se opet na početno stanje + e-okruženje.
+     * Nakon poziva ove metode automat može biti u stanju RADI ili stanju PRIHVATLJIV ovisno o
+     * e-okruženju početnog stanja.
      */
     public void pokreniAutomat(){
         status = LAutomatStatus.RADI;
         trenutnaStanja.clear();
         trenutnaStanja.add(pocetnoStanje);
         EOkruzenje();
+        postaviStatus();
     }
 
     /**
@@ -63,6 +64,7 @@ public class LAutomat {
      * @return status automata nakon izvršenih prijelaza
      */
     public LAutomatStatus prijelaz(char znak) {
+        if(status == LAutomatStatus.STOPIRAN) return status;
         Set<Node> novaStanja = new HashSet<>();
 
         for(Node pojedinoStanje : trenutnaStanja){ // dodavanje stanja u koja idemo prijelazima automata
@@ -78,9 +80,21 @@ public class LAutomat {
         }
 
         EOkruzenje();  // modificiramo trenutnaStanja, proširivanje EOkruženjem
-        status =  (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
-        return status;
+        return postaviStatus();
 
+    }
+
+    /**
+     * Identificira trenutni status automata i postavlja ga kao zadani.
+     * @return trenutni status automata
+     */
+    private LAutomatStatus postaviStatus(){
+        if(trenutnaStanja.isEmpty()) {
+            status = LAutomatStatus.STOPIRAN;
+            return status;
+        }
+        status = (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
+        return status;
     }
 
     public LAutomatStatus getStatus() {
@@ -101,29 +115,15 @@ public class LAutomat {
     private void EOkruzenje() {
 
         List<Node>  stogStanja = new ArrayList<>(trenutnaStanja); // u pocetku su na stoga sva stanja koja cine skup trenutnih
-        HashSet<Node> obiljezenaStanja = new HashSet<>(); // u obiljezenim stanjima ce biti epsilon okruzenje
-        /* STARI NAČIN
-         HashSet<Node> rezultat = new HashSet<>();
-        rezultat.addAll(trenutnaStanja); //eps-okruženje skupa stanja će uvijek imati dotični skup stanja
+        HashSet<Node> obiljezenaStanja = new HashSet<>(trenutnaStanja); // u obiljezenim stanjima ce biti epsilon okruzenje
 
-        int setSize = rezultat.size();
-
-        while(true){
-            for(Node stanje : new HashSet<Node>(rezultat)){
-                rezultat.addAll(stanje.getEPrijelazi());
-            }
-            if(rezultat.size() == setSize) break;
-            setSize = rezultat.size();
-        }
-
-        trenutnaStanja = rezultat;*/
         while(!stogStanja.isEmpty()){
             Node temp = stogStanja.get(stogStanja.size() - 1); // skidamo stanje s "vrha" stoga
             stogStanja.remove(stogStanja.size() - 1);
                 for(Node pojedinoStanje : temp.getEPrijelazi()){ // iteriramo kroz skup stanja u koji ide eps-prijelazima
                     if(!obiljezenaStanja.contains(pojedinoStanje)){
-                        obiljezenaStanja.add(temp); // ako nije bio obilježen, postaje obilježen
-                        stogStanja.add(temp);
+                        obiljezenaStanja.add(pojedinoStanje); // ako nije bio obilježen, postaje obilježen
+                        stogStanja.add(pojedinoStanje);
                     }
                 }
             }
