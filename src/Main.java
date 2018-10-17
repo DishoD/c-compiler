@@ -1,25 +1,22 @@
 public class Main {
 
     public static void main(String[] args) {
-        LAnalizator analizator = new LAnalizator("sdas", "S_Pocetno");
-        LAutomatBuilder automatBuilder = new LAutomatBuilder();
-        LAnalizator.BuilderAkcija builderAkcija = analizator.getNoviBuilderAkcija();
+        LAutomatBuilder b = new LAutomatBuilder();
 
-        automatBuilder.dodajPrijelaz(1, 2, 'a');
-        automatBuilder.dodajPrijelaz(2, 3, 'b');
-        automatBuilder.dodajPrijelaz(3, 4, 'c');
-        automatBuilder.setPocetnoStanje(1);
-        automatBuilder.setPrihvatljivoStanje(4);
+        b.dodajEPrijelaz(1,6).dodajEPrijelaz(1,2);
+        b.dodajPrijelaz(2,3,'a').dodajPrijelaz(3,4,'b');
+        b.dodajPrijelaz(4,5,'c').dodajEPrijelaz(5,2).dodajEPrijelaz(5,6);
+        b.setPocetnoStanje(1);
+        b.setPrihvatljivoStanje(6);
 
-        builderAkcija.dodajAkcijuOdbaci();
-        builderAkcija.dodajAkcijuNoviRedak();
-        builderAkcija.dodajAkcijuDodajToken("KR_FOR");
+        testiraj("abcabc", b.getLAutomat());
+    }
 
-        LAutomat automat = automatBuilder.getLAutomat();
-        automat.setAkcije(builderAkcija.getAkcije());
-        analizator.dodajAutomat("S_Pocetno", automat);
-
-        analizator.pokreniAnalizator();
-        analizator.getTablicaUniformnihZnakova();
+    private static void testiraj(String str, LAutomat automat) {
+        automat.pokreniAutomat();
+        for(char c : str.toCharArray()){
+            automat.prijelaz(c);
+        }
+        System.out.println(automat.getStatus());
     }
 }
