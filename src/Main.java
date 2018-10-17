@@ -3,6 +3,7 @@ public class Main {
     public static void main(String[] args) {
         LAutomatBuilder b = new LAutomatBuilder();
 
+        // automat za regularni izraz: (abc)*
         b.dodajEPrijelaz(1,6).dodajEPrijelaz(1,2);
         b.dodajPrijelaz(2,3,'a').dodajPrijelaz(3,4,'b');
         b.dodajPrijelaz(4,5,'c').dodajEPrijelaz(5,2).dodajEPrijelaz(5,6);
