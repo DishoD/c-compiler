@@ -2,6 +2,9 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+/**
+ * E-NKA simulator.
+ */
 public class LAutomat {
 
     public static enum LAutomatStatus {
@@ -93,11 +96,11 @@ public class LAutomat {
     }
 
     /**
-     * Trenutna stanja proširi stanjima epsilon prijelaza.  IZDOKUMENTIRAT
+     * Trenutna stanja proširi stanjima epsilon prijelaza.
      */
     private void EOkruzenje() {
 
-        List<Node>  stogStanja = new LinkedList<>(trenutnaStanja); // u pocetku su na stoga sva stanja koja cine skup trenutnih
+        List<Node>  stogStanja = new ArrayList<>(trenutnaStanja); // u pocetku su na stoga sva stanja koja cine skup trenutnih
         HashSet<Node> obiljezenaStanja = new HashSet<>(); // u obiljezenim stanjima ce biti epsilon okruzenje
         /* STARI NAČIN
          HashSet<Node> rezultat = new HashSet<>();
