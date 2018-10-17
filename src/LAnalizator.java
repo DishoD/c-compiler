@@ -101,9 +101,9 @@ public class LAnalizator {
             LAutomat.LAutomatStatus status = getStatusAutomata();
 
             if(status == LAutomat.LAutomatStatus.RADI) {
-                if(zavrsetak+1 < ulazniNiz.length) {
-                    char znak = ulazniNiz[zavrsetak+1];
-                    zavrsetak++;
+                zavrsetak++;
+                if(zavrsetak < ulazniNiz.length) {
+                    char znak = ulazniNiz[zavrsetak];
                     izvrsiPrijelazeAutomata(znak);
                 } else {
                     status = LAutomat.LAutomatStatus.STOPIRAN;
@@ -112,8 +112,8 @@ public class LAnalizator {
             if(status == LAutomat.LAutomatStatus.PRIHVATLJIV) {
                 posljednji = zavrsetak;
                 zavrsetak++;
-                if(zavrsetak+1 < ulazniNiz.length) {
-                    char znak = ulazniNiz[zavrsetak+1];
+                if(zavrsetak < ulazniNiz.length) {
+                    char znak = ulazniNiz[zavrsetak];
                     izvrsiPrijelazeAutomata(znak);
                 } else {
                     status = LAutomat.LAutomatStatus.STOPIRAN;
@@ -127,9 +127,9 @@ public class LAnalizator {
                     pokreniAutomate();
                 } else {
                     automati.get(trenutnoStanje).get(indexPrihvacenogAutomata).izvrsiAkcije();
+                    indexPrihvacenogAutomata = -1;
                     pokreniAutomate();
                 }
-                continue;
             }
         }
 

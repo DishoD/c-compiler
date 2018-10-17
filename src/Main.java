@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        LAnalizator analizator = new LAnalizator("abc 123\n   123 abc   123abc\n", "s");
+        LAnalizator analizator = new LAnalizator("abcababab\n123\n\n\n        šđab12a321123   \nabc\n\n", "s");
         LAnalizator.BuilderAkcija builderAkcija = analizator.getNoviBuilderAkcija();
         LAutomat automat;
 
