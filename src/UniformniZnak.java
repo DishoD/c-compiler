@@ -23,4 +23,9 @@ public class UniformniZnak {
         this.redak = redak;
         this.grupiraniZnakovi = grupiraniZnakovi;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %d %s", token, redak, grupiraniZnakovi);
+    }
 }

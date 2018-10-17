@@ -113,7 +113,7 @@ public class LAnalizator {
                 posljednji = zavrsetak;
                 zavrsetak++;
                 if(zavrsetak+1 < ulazniNiz.length) {
-                    char znak = ulazniNiz[zavrsetak];
+                    char znak = ulazniNiz[zavrsetak+1];
                     izvrsiPrijelazeAutomata(znak);
                 } else {
                     status = LAutomat.LAutomatStatus.STOPIRAN;
@@ -255,6 +255,7 @@ public class LAnalizator {
 
     /**
      * Omogućava laku izgradnju akcije (niza argumenata).
+     * Akcije moraju biti dodavane redom koji je zadan u uputi.
      */
     public static class BuilderAkcija {
         private LAnalizator analizator;
@@ -292,5 +293,11 @@ public class LAnalizator {
         public List<Akcija> getAkcije() {
             return akcije;
         }
+
+        /**
+         * Briše sve akcije koje se trenutno nalaze u listi.
+         * Zvati ovu metodu kada želite starati novi set akcija.
+         */
+        public void clear() {akcije = new LinkedList<>();}
     }
 }
