@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class LAnalizator {
     /**
@@ -35,6 +34,8 @@ public class LAnalizator {
         this.trenutnoStanje = pocetnoStanje;
     }
 
+    public LAnalizator() {}
+
     /**
      * Dodaje dani automat u analizator. Dani automat će biti pridružen danom stanju.
      * Automati se moraju dodavati u poretku prioriteta (prvi dodani automat za dano stanje ima najveći prioritet).
@@ -43,14 +44,13 @@ public class LAnalizator {
      * @param automat automat koji se dodaje
      */
     public void dodajAutomat(String stanje, LAutomat automat) {
-        automati.putIfAbsent(stanje, new ArrayList<>());
-        automati.compute(stanje, new BiFunction<String, List<LAutomat>, List<LAutomat>>() {
-            @Override
-            public List<LAutomat> apply(String s, List<LAutomat> lAutomats) {
-                lAutomats.add(automat);
-                return lAutomats;
-            }
-        });
+        List<LAutomat> a = automati.get(stanje);
+        if(a == null) {
+            a = new ArrayList<>();
+            a.add(automat);
+        } else {
+            a.add(automat);
+        }
     }
 
     public BuilderAkcija getNoviBuilderAkcija() {
@@ -59,6 +59,24 @@ public class LAnalizator {
 
     public List<UniformniZnak> getTablicaUniformnihZnakova() {
         return tablicaUniformnihZnakova;
+    }
+
+    /**
+     * Postavi ulazni niz leksičkog analizatora.
+     *
+     * @param ulazniNiz ulazni niz
+     */
+    public void setUlazniNiz(String ulazniNiz) {
+        this.ulazniNiz = ulazniNiz.toCharArray();
+    }
+
+    /**
+     * Postavi početno stanje leksičkog analizatora.
+     *
+     * @param pocetnoStanje početno stanje
+     */
+    public void setPocetnoStanje(String pocetnoStanje) {
+        this.trenutnoStanje = pocetnoStanje;
     }
 
     private void umetniNoviUniformniZnak(String token, int brojRetka, String grupiraniZnakovi) {
