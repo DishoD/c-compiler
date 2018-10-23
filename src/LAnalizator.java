@@ -1,8 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.*;
 
 public class LAnalizator {
     /**
@@ -12,13 +8,12 @@ public class LAnalizator {
 
     private char[] ulazniNiz;
     private String trenutnoStanje;
-    private StringBuilder grupiraniZnakovi;
-    private int brojRetka;
+    private int brojRetka = 1;
 
-    private int pocetak;
-    private int posljednji;
-    private int zavrsetak;
-    private int indexPrihvacenogAutomata;
+    private int pocetak = 0;
+    private int posljednji = 0;
+    private int zavrsetak = -1;
+    private int indexPrihvacenogAutomata = -1;
 
     List<UniformniZnak> tablicaUniformnihZnakova = new ArrayList<>();
 
@@ -39,6 +34,8 @@ public class LAnalizator {
         this.trenutnoStanje = pocetnoStanje;
     }
 
+    public LAnalizator() {}
+
     /**
      * Dodaje dani automat u analizator. Dani automat će biti pridružen danom stanju.
      * Automati se moraju dodavati u poretku prioriteta (prvi dodani automat za dano stanje ima najveći prioritet).
@@ -47,14 +44,13 @@ public class LAnalizator {
      * @param automat automat koji se dodaje
      */
     public void dodajAutomat(String stanje, LAutomat automat) {
-        automati.putIfAbsent(stanje, new ArrayList<>());
-        automati.compute(stanje, new BiFunction<String, List<LAutomat>, List<LAutomat>>() {
-            @Override
-            public List<LAutomat> apply(String s, List<LAutomat> lAutomats) {
-                lAutomats.add(automat);
-                return lAutomats;
-            }
-        });
+        List<LAutomat> a = automati.get(stanje);
+        if(a == null) {
+            a = new ArrayList<>();
+            a.add(automat);
+        } else {
+            a.add(automat);
+        }
     }
 
     public BuilderAkcija getNoviBuilderAkcija() {
@@ -63,6 +59,24 @@ public class LAnalizator {
 
     public List<UniformniZnak> getTablicaUniformnihZnakova() {
         return tablicaUniformnihZnakova;
+    }
+
+    /**
+     * Postavi ulazni niz leksičkog analizatora.
+     *
+     * @param ulazniNiz ulazni niz
+     */
+    public void setUlazniNiz(String ulazniNiz) {
+        this.ulazniNiz = ulazniNiz.toCharArray();
+    }
+
+    /**
+     * Postavi početno stanje leksičkog analizatora.
+     *
+     * @param pocetnoStanje početno stanje
+     */
+    public void setPocetnoStanje(String pocetnoStanje) {
+        this.trenutnoStanje = pocetnoStanje;
     }
 
     private void umetniNoviUniformniZnak(String token, int brojRetka, String grupiraniZnakovi) {
@@ -89,13 +103,98 @@ public class LAnalizator {
         return new AkcijaVratiSe(naZnak);
     }
 
+    private void ubaciNoviUniformniZnakUTablicu (String token, int redak, String grupiraniZnakovi) {
+        tablicaUniformnihZnakova.add(new UniformniZnak(token, redak, grupiraniZnakovi));
+    }
+
     //-----------------------------------------TODO-------------------------------------------------------------------
 
     /**
      * Analizator se pokreće te popunjava tablicu uniformnih znakova za ulazni niz predan analizatoru.
      */
     public void pokreniAnalizator() {
+        pokreniAutomate();
 
+        while(pocetak < ulazniNiz.length){
+            LAutomat.LAutomatStatus status = getStatusAutomata();
+
+            if(status == LAutomat.LAutomatStatus.RADI) {
+                zavrsetak++;
+                if(zavrsetak < ulazniNiz.length) {
+                    char znak = ulazniNiz[zavrsetak];
+                    izvrsiPrijelazeAutomata(znak);
+                } else {
+                    status = LAutomat.LAutomatStatus.STOPIRAN;
+                }
+            }
+            if(status == LAutomat.LAutomatStatus.PRIHVATLJIV) {
+                posljednji = zavrsetak;
+                zavrsetak++;
+                if(zavrsetak < ulazniNiz.length) {
+                    char znak = ulazniNiz[zavrsetak];
+                    izvrsiPrijelazeAutomata(znak);
+                } else {
+                    status = LAutomat.LAutomatStatus.STOPIRAN;
+                }
+            }
+            if(status == LAutomat.LAutomatStatus.STOPIRAN) {
+                if(indexPrihvacenogAutomata == -1) {
+                    System.err.println(ulazniNiz[pocetak]);
+                    zavrsetak = pocetak;
+                    pocetak++;
+                    pokreniAutomate();
+                } else {
+                    automati.get(trenutnoStanje).get(indexPrihvacenogAutomata).izvrsiAkcije();
+                    indexPrihvacenogAutomata = -1;
+                    pokreniAutomate();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * pokreće sve automate za trenutno stanje analizatora
+     */
+    private void pokreniAutomate(){
+        for(LAutomat automat : automati.get(trenutnoStanje)) automat.pokreniAutomat();
+    }
+
+    /**
+     * Izvrši prijelaze za sve automate iz strenutnog stanja analizatora za zadani znak.
+     * @param znak znak za prijelaze
+     */
+    private void izvrsiPrijelazeAutomata(char znak) {
+        for(LAutomat automat : automati.get(trenutnoStanje)) automat.prijelaz(znak);
+    }
+
+    /**
+     * Dohvaća trenutni status automata trenutnog stanja analizatora.
+     *      STOPIRAN - svi automati su stopirani
+     *      RADI - radi barem jedan automat
+     *      PRIHVATLJIV - barem jedan automat je u prihvatljivom stanju; indexPrihvatljivogAutomata se postavlja na index prihvatljivog automata s najvećim prioritetom
+     * @return status automata
+     */
+    private LAutomat.LAutomatStatus getStatusAutomata() {
+        LAutomat.LAutomatStatus status = LAutomat.LAutomatStatus.STOPIRAN;
+        int index = 0;
+        for(LAutomat automat : automati.get(trenutnoStanje)){
+            LAutomat.LAutomatStatus statusTrenutnogAutomata = automat.getStatus();
+
+            if(statusTrenutnogAutomata == LAutomat.LAutomatStatus.PRIHVATLJIV) {
+                if(status != LAutomat.LAutomatStatus.PRIHVATLJIV) {
+                    status = LAutomat.LAutomatStatus.PRIHVATLJIV;
+                    indexPrihvacenogAutomata = index;
+                }
+            }
+
+            if(statusTrenutnogAutomata == LAutomat.LAutomatStatus.RADI && status == LAutomat.LAutomatStatus.STOPIRAN) {
+                status = LAutomat.LAutomatStatus.RADI;
+            }
+
+            index++;
+        }
+        return status;
     }
 
     /**
@@ -110,7 +209,10 @@ public class LAnalizator {
 
         @Override
         public void izvrsi() {
-
+            String grupiraniZnakovi = new String(ulazniNiz, pocetak, posljednji - pocetak + 1);
+            ubaciNoviUniformniZnakUTablicu(imeTokena, brojRetka, grupiraniZnakovi);
+            pocetak = posljednji + 1;
+            zavrsetak = posljednji;
         }
     }
 
@@ -121,7 +223,8 @@ public class LAnalizator {
 
         @Override
         public void izvrsi() {
-
+            pocetak = posljednji + 1;
+            zavrsetak = posljednji;
         }
     }
 
@@ -164,16 +267,17 @@ public class LAnalizator {
 
         @Override
         public void izvrsi() {
-
+            posljednji = pocetak + naZnak - 1;
         }
     }
 
     /**
      * Omogućava laku izgradnju akcije (niza argumenata).
+     * Akcije moraju biti dodavane redom koji je zadan u uputi.
      */
     public static class BuilderAkcija {
         private LAnalizator analizator;
-        private List<Akcija> akcije;
+        private List<Akcija> akcije = new LinkedList<>();
 
         public BuilderAkcija(LAnalizator analizator) {
             this.analizator = analizator;
@@ -200,12 +304,18 @@ public class LAnalizator {
         }
 
         public BuilderAkcija dodajAkcijuVratiSe(int naZnak) {
-            akcije.add(analizator.getAkcijaVratiSe(naZnak));
+            akcije.add(0, analizator.getAkcijaVratiSe(naZnak));
             return this;
         }
 
         public List<Akcija> getAkcije() {
             return akcije;
         }
+
+        /**
+         * Briše sve akcije koje se trenutno nalaze u listi.
+         * Zvati ovu metodu kada želite starati novi set akcija.
+         */
+        public void clear() {akcije = new LinkedList<>();}
     }
 }
