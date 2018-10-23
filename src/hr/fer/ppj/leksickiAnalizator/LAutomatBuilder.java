@@ -1,3 +1,4 @@
+package hr.fer.ppj.leksickiAnalizator;
 import java.util.HashMap;
 import java.util.Map;
 

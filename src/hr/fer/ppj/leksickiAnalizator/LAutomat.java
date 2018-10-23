@@ -1,3 +1,4 @@
+package hr.fer.ppj.leksickiAnalizator;
 import java.awt.*;
 import java.util.*;
 import java.util.List;

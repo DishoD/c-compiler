@@ -1,3 +1,4 @@
+package hr.fer.ppj.leksickiAnalizator;
 /**
  * Jedan redak u tablici uniformnih znakova.
  */
