@@ -48,6 +48,7 @@ public class LAnalizator {
         if(a == null) {
             a = new ArrayList<>();
             a.add(automat);
+            automati.put(stanje,a);
         } else {
             a.add(automat);
         }
