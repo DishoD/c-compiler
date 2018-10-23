@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 /**
  * Čvor(stanje) u e-NKA.
@@ -32,14 +31,13 @@ public class Node {
      * @param node odredišni čvor prijelaza
      */
     public void dodajPrijelaz(char znak, Node node) {
-        prijelazi.putIfAbsent(znak, new ArrayList<>());
-        prijelazi.compute(znak, new BiFunction<Character, List<Node>, List<Node>>() {
-            @Override
-            public List<Node> apply(Character character, List<Node> nodes) {
-                nodes.add(node);
-                return nodes;
-            }
-        });
+        List<Node> n = prijelazi.get(znak);
+        if(n == null) {
+            n = new ArrayList<>();
+            n.add(node);
+        } else {
+            n.add(node);
+        }
     }
 
     /**
