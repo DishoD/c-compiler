@@ -1,4 +1,3 @@
-package hr.fer.ppj.leksickiAnalizator;
 public class Main {
 
     public static void main(String[] args) {

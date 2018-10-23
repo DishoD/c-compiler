@@ -1,4 +1,3 @@
-package hr.fer.ppj.leksickiAnalizator;
 /**
  * Sučelje koje određuje sve akcije(argumente) za određeni par stanja i regularnog izraza.
  */
