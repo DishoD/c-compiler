@@ -149,7 +149,7 @@ public class RegexParser {
 	}
 	
 	/**
-	 * trazi zatvorenu zagradu koja odgovara otvorenoj zagradi (koja se nalazi na indexu i unutar izlaza
+	 * trazi zatvorenu zagradu koja odgovara otvorenoj zagradi (koja se nalazi na indexu i unutar izlaza)
 	 */
 	private int pronađiOdgovarajucuZagradu(String izraz, int i) {
 		int brojacZagrada = 1;	//pocetna vrjednost je 1 jer je na mjestu i otvorena zagrada 
@@ -182,21 +182,19 @@ public class RegexParser {
 			oznakaPrijelaznogZnaka = "" + prijelazniZnak;
 			break;
 		}
-		prijelazi.append("" + izvor + " " + odrediste + " " + oznakaPrijelaznogZnaka + ", ");
+		prijelazi.append("" + izvor + " " + odrediste + " " + oznakaPrijelaznogZnaka + " ");
 		
 	}
 
 	private void dodajEpsilonPrijelaz(int izvor, int odrediste) {
-		epsilonPrijelazi.append("" + izvor + " " + odrediste + ", ");
+		epsilonPrijelazi.append("" + izvor + " " + odrediste + " ");
 	}
 	
 	public String getPrijelazi() {
-		String sviPrijelazi = prijelazi.toString();
-		return sviPrijelazi.substring(0, sviPrijelazi.length()-2);
+		return prijelazi.toString().trim();
 	}
 	
 	public String getEpsilonPrijelazi() {
-		String sviPrijelazi = epsilonPrijelazi.toString();
-		return sviPrijelazi.substring(0, sviPrijelazi.length()-2);
+		return epsilonPrijelazi.toString().trim();
 	}
 }

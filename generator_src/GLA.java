@@ -42,9 +42,9 @@ public class GLA {
 				} else if(inputString.startsWith("}")) {
 					regexParser.pretvori(regex);
 					System.out.println(stanjeAnalizatora
-							+ "--" + regexParser.getPrijelazi()
-							+ "--" + regexParser.getEpsilonPrijelazi()
-							+ "--" + akcije.toString().substring(0, akcije.length()-2)); // -2 zbog micanja zareza i razmaka
+							+ "\t" + regexParser.getPrijelazi()
+							+ "\t" + regexParser.getEpsilonPrijelazi()
+							+ "\t" + akcije.toString().substring(0, akcije.length()-2)); // -2 zbog micanja zareza i razmaka
 					regexParser.reset();
 					akcije = new StringBuilder();
 				//dodaj akcije
@@ -62,7 +62,7 @@ public class GLA {
 
 	/**
 	 * 
-	 * Procita sve definicije i poslozoi ih u mapz, pritom micuci sve reference
+	 * Procita sve definicije i poslozoi ih u mapu, pritom micuci sve reference
 	 */
 	private static void procitajRegularneDefinicije(BufferedReader reader) throws Exception {
 		String inputString = "";
