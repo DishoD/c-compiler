@@ -24,35 +24,7 @@ public class GLA {
 			//ispis pocetnog stanja
 			System.out.println(stanjaLAnalizatora.get(0));
 			
-			//pravila
-			RegexParser regexParser = new RegexParser();
-			String stanjeAnalizatora = "";
-			String regex = "";
-			StringBuilder akcije = new StringBuilder();
-			for(String inputString = reader.readLine(); inputString != null; inputString = reader.readLine()) {
-				//odredi stanje analizatora i regex string
-				if(inputString.startsWith("<")) {
-					int pocetakRegexa = inputString.indexOf(">") + 1;
-					stanjeAnalizatora = inputString.substring(1, pocetakRegexa-1);
-					regex = izbaciSveReference(inputString).substring(pocetakRegexa);
-				//ne radi nista
-				} else if (inputString.startsWith("{")) {
-					continue;
-				//kraj pravila : ispisi stanje, prijelaze automata i akcije
-				} else if(inputString.startsWith("}")) {
-					regexParser.pretvori(regex);
-					System.out.println(stanjeAnalizatora
-							+ "\t" + regexParser.getPrijelazi()
-							+ "\t" + regexParser.getEpsilonPrijelazi()
-							+ "\t" + akcije.toString().substring(0, akcije.length()-2)); // -2 zbog micanja zareza i razmaka
-					regexParser.reset();
-					akcije = new StringBuilder();
-				//dodaj akcije
-				} else {
-					if(inputString.equals("-")) inputString = "ODBACI";
-					akcije.append(inputString + ", ");
-				}
-			}
+			refaktorirajPravila(reader);
 			
 			reader.close();			
 		} catch(Exception e) {
@@ -123,5 +95,41 @@ public class GLA {
 				tokeni.add(token);
 			}
 		}
+	}
+	
+	private static void refaktorirajPravila(BufferedReader reader) throws IOException {
+		RegexParser regexParser = new RegexParser();
+		String stanjeAnalizatora = "";
+		String regex = "";
+		StringBuilder akcije = new StringBuilder();
+		
+		for(String inputString = reader.readLine(); inputString != null; inputString = reader.readLine()) {
+			//odredi stanje analizatora i regex string
+			if(inputString.startsWith("<")) {
+				int pocetakRegexa = inputString.indexOf(">") + 1;
+				stanjeAnalizatora = inputString.substring(1, pocetakRegexa-1);
+				regex = izbaciSveReference(inputString.substring(pocetakRegexa));
+			//ne radi nista
+			} else if (inputString.startsWith("{")) {
+				continue;
+			//kraj pravila : ispisi stanje, prijelaze automata i akcije
+			} else if(inputString.startsWith("}")) {
+				regexParser.pretvori(regex);
+				ispisiPravilo(stanjeAnalizatora, regexParser.getPrijelazi(), regexParser.getEpsilonPrijelazi(), akcije);
+				regexParser.reset();
+				akcije = new StringBuilder();
+			//dodaj akcije
+			} else {
+				if(inputString.equals("-")) inputString = "ODBACI";
+				akcije.append(inputString + ", ");
+			}
+		}
+	}
+
+	private static void ispisiPravilo(String stanjeAnalizatora, String prijelazi, String epsilonPrijelazi, StringBuilder akcije) {
+		System.out.println(stanjeAnalizatora
+				+ "\t" + prijelazi
+				+ "\t" + epsilonPrijelazi
+				+ "\t" + akcije.toString().substring(0, akcije.length()-2)); // -2 zbog micanja zareza i razmaka
 	}
 }

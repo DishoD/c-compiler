@@ -28,27 +28,30 @@ public class RegexParser {
 		epsilonPrijelazi = new StringBuilder();
 	}
 	
-	private int novoStanje() {
-		return sekvencaStanja++;
-	}
-
-	private boolean jeOperator(String izraz, int indexOperatora) {
-		int brojBackslasha = 0;
-		while(indexOperatora-1 >= 0 ) {
-			if(izraz.charAt(indexOperatora-1) == '\\') {
-				brojBackslasha++;
-				indexOperatora--;
-			} else {
-				break;
-			}
-		}
-		return brojBackslasha%2 == 0 ? true : false;
-	}
-	
 	/**
 	 * parsira regex i stvara prijelaze
 	 */
 	public ParStanja pretvori(String izraz) {
+		List<String> izbori = splitajPoOperatoruIzbora(izraz);
+		
+		int lijevoStanje = novoStanje();
+		int desnoStanje = novoStanje();
+		
+		if(izbori.size() > 0) {
+			for(String izbor : izbori) {
+				ParStanja privremeno = pretvori(izbor);
+				dodajEpsilonPrijelaz(lijevoStanje, privremeno.lijevoStanje);
+				dodajEpsilonPrijelaz(privremeno.desnoStanje, desnoStanje);
+			}
+			
+		} else {
+			parsirajIzraz(izraz, lijevoStanje, desnoStanje);
+		}
+		
+		return new ParStanja(lijevoStanje, desnoStanje);
+	}
+	
+	private List<String> splitajPoOperatoruIzbora(String izraz) {
 		List<String> izbori = new LinkedList<>();
 		int brojZagrada = 0;
 		
@@ -66,90 +69,84 @@ public class RegexParser {
 		if(izbori.size()>0) {
 			izbori.add(izraz.substring(pocetak, izraz.length()));
 		}
-		
-		int lijevoStanje = novoStanje();
-		int desnoStanje = novoStanje();
-		
-		if(izbori.size() > 0) {
-			for(String izbor : izbori) {
-				ParStanja privremeno = pretvori(izbor);
-				dodajEpsilonPrijelaz(lijevoStanje, privremeno.lijevoStanje);
-				dodajEpsilonPrijelaz(privremeno.desnoStanje, desnoStanje);
-			}
-			
-		} else {
-			boolean prefiksirano = false;
-			int zadnjeStanje = lijevoStanje;
-			for(int i = 0; i < izraz.length(); i++) {
-				int a;
-				int b;
-				if(prefiksirano) {
-					prefiksirano = false;
-					char prijelazniZnak;
-					switch (izraz.charAt(i)) {
-						case 't':
-							prijelazniZnak = '\t';
-							break;
-						case 'n':
-							prijelazniZnak = '\n';
-							break;
-						case '_':
-							prijelazniZnak = ' ';
-							break;
-						default:
-							prijelazniZnak = izraz.charAt(i);
-							break;
-					}
+		return izbori;
+	}
+
+	private void parsirajIzraz(String izraz, int lijevoStanje, int desnoStanje) {
+		boolean prefiksirano = false;
+		int zadnjeStanje = lijevoStanje;
+		for(int i = 0; i < izraz.length(); i++) {
+			int a;
+			int b;
+			if(prefiksirano) {
+				prefiksirano = false;
+				char prijelazniZnak = odrediPosebanZnak(izraz.charAt(i));
+				a = novoStanje();
+				b = novoStanje();
+				dodajPrijelaz(a, b, prijelazniZnak);
+			} else {
+				if(izraz.charAt(i) == '\\') {
+					prefiksirano = true;
+					continue;
+				}
+				if(izraz.charAt(i) != '(') {
 					a = novoStanje();
 					b = novoStanje();
-					dodajPrijelaz(a, b, prijelazniZnak);
-				} else {
-					if(izraz.charAt(i) == '\\') {
-						prefiksirano = true;
-						continue;
-					}
-					if(izraz.charAt(i) != '(') {
-						a = novoStanje();
-						b = novoStanje();
-						if(izraz.charAt(i) == '$') {
-							dodajEpsilonPrijelaz(a, b);
-						} else {
-							dodajPrijelaz(a, b, izraz.charAt(i));
-						}
-					} else {
-						int j = pronađiOdgovarajucuZagradu(izraz, i);
-						ParStanja privremeno = pretvori(izraz.substring(i+1, j));
-						a = privremeno.lijevoStanje;
-						b = privremeno.desnoStanje;
-						i = j;
-					}
-				}
-				
-				if(i+1 < izraz.length() ) {
-					if(izraz.charAt(i+1) == '*') {
-						int x = a;
-						int y = b;
-						a = novoStanje();
-						b = novoStanje();
-						dodajEpsilonPrijelaz(a, x);
-						dodajEpsilonPrijelaz(y, b);
+					if(izraz.charAt(i) == '$') {
 						dodajEpsilonPrijelaz(a, b);
-						dodajEpsilonPrijelaz(y, x);
-						i++;
+					} else {
+						dodajPrijelaz(a, b, izraz.charAt(i));
 					}
+				} else {
+					int j = pronađiOdgovarajucuZagradu(izraz, i);
+					ParStanja privremeno = pretvori(izraz.substring(i+1, j));
+					a = privremeno.lijevoStanje;
+					b = privremeno.desnoStanje;
+					i = j;
 				}
-				
-				dodajEpsilonPrijelaz(zadnjeStanje, a);
-				zadnjeStanje = b;
 			}
-			dodajEpsilonPrijelaz(zadnjeStanje, desnoStanje);
+			
+			if(i+1 < izraz.length() ) {
+				if(izraz.charAt(i+1) == '*') {
+					int x = a;
+					int y = b;
+					a = novoStanje();
+					b = novoStanje();
+					dodajEpsilonPrijelaz(a, x);
+					dodajEpsilonPrijelaz(y, b);
+					dodajEpsilonPrijelaz(a, b);
+					dodajEpsilonPrijelaz(y, x);
+					i++;
+				}
+			}
+			
+			dodajEpsilonPrijelaz(zadnjeStanje, a);
+			zadnjeStanje = b;
 		}
-		
-		return new ParStanja(lijevoStanje, desnoStanje);
+		dodajEpsilonPrijelaz(zadnjeStanje, desnoStanje);
+	}
+
+	private char odrediPosebanZnak(char znak) {
+		char prijelazniZnak;
+		switch (znak) {
+			case 't':
+				prijelazniZnak = '\t';
+				break;
+			case 'n':
+				prijelazniZnak = '\n';
+				break;
+			case '_':
+				prijelazniZnak = ' ';
+				break;
+			default:
+				prijelazniZnak = znak;
+				break;
+		}
+		return prijelazniZnak;
 	}
 	
 	/**
-	 * trazi zatvorenu zagradu koja odgovara otvorenoj zagradi (koja se nalazi na indexu i unutar izlaza)
+	 * Trazi zatvorenu zagradu koja odgovara otvorenoj zagradi (koja se nalazi na indexu i unutar izlaza)
 	 */
 	private int pronađiOdgovarajucuZagradu(String izraz, int i) {
 		int brojacZagrada = 1;	//pocetna vrjednost je 1 jer je na mjestu i otvorena zagrada 
@@ -165,25 +162,47 @@ public class RegexParser {
 		}
 		return izraz.length()-1; //ako su im datoteke dobro formatirane, nece se nikad dogoditi
 	}
+	
+	private int novoStanje() {
+		return sekvencaStanja++;
+	}
+
+	private boolean jeOperator(String izraz, int indexOperatora) {
+		int brojBackslasha = 0;
+		while(indexOperatora-1 >= 0 ) {
+			if(izraz.charAt(indexOperatora-1) == '\\') {
+				brojBackslasha++;
+				indexOperatora--;
+			} else {
+				break;
+			}
+		}
+		return brojBackslasha%2 == 0 ? true : false;
+	}
 
 	private void dodajPrijelaz(int izvor, int odrediste, char prijelazniZnak) {
-		String oznakaPrijelaznogZnaka;
-		switch (prijelazniZnak) {
-		case '\t':
-			oznakaPrijelaznogZnaka = "\\t";
-			break;
-		case '\n':
-			oznakaPrijelaznogZnaka = "\\n";
-			break;
-		case ' ':
-			oznakaPrijelaznogZnaka = "\\_";
-			break;
-		default:
-			oznakaPrijelaznogZnaka = "" + prijelazniZnak;
-			break;
-		}
+		String oznakaPrijelaznogZnaka = odrediOznakuZnaka(prijelazniZnak);
 		prijelazi.append("" + izvor + " " + odrediste + " " + oznakaPrijelaznogZnaka + " ");
 		
+	}
+
+	private String odrediOznakuZnaka(char prijelazniZnak) {
+		String oznakaPrijelaznogZnaka;
+		switch (prijelazniZnak) {
+			case '\t':
+				oznakaPrijelaznogZnaka = "\\t";
+				break;
+			case '\n':
+				oznakaPrijelaznogZnaka = "\\n";
+				break;
+			case ' ':
+				oznakaPrijelaznogZnaka = "\\_";
+				break;
+			default:
+				oznakaPrijelaznogZnaka = "" + prijelazniZnak;
+				break;
+		}
+		return oznakaPrijelaznogZnaka;
 	}
 
 	private void dodajEpsilonPrijelaz(int izvor, int odrediste) {
