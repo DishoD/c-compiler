@@ -7,7 +7,7 @@ public class LA {
     private static LAnalizator analizator = new LAnalizator();
 
     public static void main(String[] args) throws IOException {
-        BufferedReader input = new BufferedReader(new FileReader("c_program.c"));
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder inputString = new StringBuilder();
 
         String line;
@@ -15,7 +15,7 @@ public class LA {
             inputString.append(line).append('\n');
         }
 
-        input = new BufferedReader(new FileReader("out.txt"));
+        input = new BufferedReader(new FileReader("out4.txt"));
         String pocetnoStanje = input.readLine();
         while((line = input.readLine()) != null) {
             parseLine(line);
@@ -31,36 +31,30 @@ public class LA {
     }
 
     private static void parseLine(String line) {
-        String[] segmenti = line.split("--");
+        String[] segmenti = line.split("\\t");
         String stanje = segmenti[0];
         LAutomatBuilder builder = new LAutomatBuilder();
         LAnalizator.BuilderAkcija akcije = analizator.getNoviBuilderAkcija();
 
-        for(String prijelaz : segmenti[1].split(",")){
-            String[] temp = prijelaz.trim().split("\\s");
-            if(temp[0].isEmpty()) continue;
-            int s1 = Integer.parseInt(temp[0].trim());
-            int s2 = Integer.parseInt(temp[1].trim());
-            char c = 0;
+        String[] prijelazi = segmenti[1].split("\\s");
+        for(int i = 0; i < prijelazi.length; i += 3) {
+            int s1 = Integer.parseInt(prijelazi[i]);
+            int s2 = Integer.parseInt(prijelazi[i+1]);
+            char c;
 
-            if(temp.length < 3) {
-                c = ',';
-            } else {
-                if (temp[2].length() > 1) {
-                    if (temp[2].trim().equals("\\_")) c = ' ';
-                    if (temp[2].trim().equals("\\n")) c = '\n';
-                    if (temp[2].trim().equals("\\t")) c = '\t';
-                } else {
-                    c = temp[2].trim().charAt(0);
-                }
-            }
+            String t = prijelazi[i+2];
+            if(t.equals("\\t"))         c = '\t';
+            else if(t.equals("\\_"))    c = ' ';
+            else if(t.equals("\\n"))    c = '\n';
+            else                        c = t.charAt(0);
+
             builder.dodajPrijelaz(s1, s2, c);
         }
 
-        for(String eprijelaz : segmenti[2].split(",")){
-            String[] temp = eprijelaz.trim().split("\\s");
-            int s1 = Integer.parseInt(temp[0].trim());
-            int s2 = Integer.parseInt(temp[1].trim());
+        String[] eprijelazi = segmenti[2].split("\\s");
+        for(int i = 0; i < eprijelazi.length; i += 2) {
+            int s1 = Integer.parseInt(eprijelazi[i]);
+            int s2 = Integer.parseInt(eprijelazi[i+1]);
             builder.dodajEPrijelaz(s1, s2);
         }
 
