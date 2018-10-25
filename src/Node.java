@@ -35,6 +35,7 @@ public class Node {
         if(n == null) {
             n = new ArrayList<>();
             n.add(node);
+            prijelazi.put(znak,n);
         } else {
             n.add(node);
         }
