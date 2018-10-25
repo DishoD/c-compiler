@@ -98,7 +98,7 @@ public class RegexParser {
 						dodajPrijelaz(a, b, izraz.charAt(i));
 					}
 				} else {
-					int j = pronađiOdgovarajucuZagradu(izraz, i);
+					int j = pronadiOdgovarajucuZagradu(izraz, i);
 					ParStanja privremeno = pretvori(izraz.substring(i+1, j));
 					a = privremeno.lijevoStanje;
 					b = privremeno.desnoStanje;
@@ -148,7 +148,7 @@ public class RegexParser {
 	/**
 	 * Trazi zatvorenu zagradu koja odgovara otvorenoj zagradi (koja se nalazi na indexu i unutar izlaza)
 	 */
-	private int pronađiOdgovarajucuZagradu(String izraz, int i) {
+	private int pronadiOdgovarajucuZagradu(String izraz, int i) {
 		int brojacZagrada = 1;	//pocetna vrjednost je 1 jer je na mjestu i otvorena zagrada 
 		for(int j = i+1; j < izraz.length(); j++) {
 			if(izraz.charAt(j) == '(' & izraz.charAt(j-1) != '\\') { 	//ukoliko nađe neprefiksiranu otvorenu 

@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,21 +10,25 @@ public class GLA {
 	private static Map<String, String> regexi = new HashMap<>(); 	
 	private static List<String> stanjaLAnalizatora = new LinkedList<>();
 	private static List<String> tokeni = new LinkedList<>();
-	
+
+	private static BufferedWriter writer;
+
 	public static void main(String[] args) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+			writer = new BufferedWriter(new FileWriter("analizator/definicije.txt", true));
 					
 			procitajRegularneDefinicije(reader);
 			procitajStanjaAnalizatora(reader);
 			procitajTokene(reader);
 			
 			//ispis pocetnog stanja
-			System.out.println(stanjaLAnalizatora.get(0));
+			writer.append(stanjaLAnalizatora.get(0) + "\n");
 			
 			refaktorirajPravila(reader);
 			
-			reader.close();			
+			reader.close();
+			writer.close();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -126,10 +128,10 @@ public class GLA {
 		}
 	}
 
-	private static void ispisiPravilo(String stanjeAnalizatora, String prijelazi, String epsilonPrijelazi, StringBuilder akcije) {
-		System.out.println(stanjeAnalizatora
+	private static void ispisiPravilo(String stanjeAnalizatora, String prijelazi, String epsilonPrijelazi, StringBuilder akcije) throws IOException {
+		writer.append(stanjeAnalizatora
 				+ "\t" + prijelazi
 				+ "\t" + epsilonPrijelazi
-				+ "\t" + akcije.toString().substring(0, akcije.length()-2)); // -2 zbog micanja zareza i razmaka
+				+ "\t" + akcije.toString().substring(0, akcije.length()-2) + "\n"); // -2 zbog micanja zareza i razmaka
 	}
 }
