@@ -14,13 +14,14 @@ public class LA {
         while((line = input.readLine()) != null) {
             inputString.append(line).append('\n');
         }
+        input.close();
 
-        input = new BufferedReader(new FileReader("out4.txt"));
+        input = new BufferedReader(new FileReader("definicije.txt"));
         String pocetnoStanje = input.readLine();
         while((line = input.readLine()) != null) {
             parseLine(line);
         }
-
+        input.close();
 
         analizator.setUlazniNiz(inputString.toString());
         analizator.setPocetnoStanje(pocetnoStanje);
