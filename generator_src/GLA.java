@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class GLA {
@@ -19,6 +20,11 @@ public class GLA {
 			writer = new BufferedWriter(new FileWriter("analizator/definicije.txt", true));
 					
 			procitajRegularneDefinicije(reader);
+			
+//			for(Map.Entry<String, String> entry : regexi.entrySet()) {
+//				System.out.println(entry.getKey() + " = " + entry.getValue());
+//			}
+			
 			procitajStanjaAnalizatora(reader);
 			procitajTokene(reader);
 			
@@ -58,23 +64,11 @@ public class GLA {
 	}
 
 	private static String izbaciSveReference(String regexString) {
-		int proslaVitica = -1;
-		while(proslaVitica < regexString.length()) {
-			int startReference = regexString.indexOf("{", proslaVitica+1);
-			if(startReference == -1) {
-				break; 		// nema niti jedna vitica -> nema referenci
+		Set<String> imenaRegexa = regexi.keySet();
+		for(String imeRegexa : imenaRegexa) {
+			if(regexString.contains(imeRegexa)) {
+				regexString = regexString.replace(imeRegexa, "(" + regexi.get(imeRegexa) + ")");
 			}
-			proslaVitica = startReference;
-			if(startReference > 0) {
-				if(regexString.charAt(startReference-1) == '\\') {	//preskoci ako je vitica prefiksirana
-					continue;
-				}
-			}
-			
-			int endReference = regexString.indexOf("}", startReference);
-
-			String referencedRegex = regexString.substring(startReference, endReference+1);
-			regexString = regexString.replace(referencedRegex, "(" + regexi.get(referencedRegex) + ")");
 		}
 		return regexString;
 	}
