@@ -1,7 +1,7 @@
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*
  * Razred koji služi za laku izgradnju LAutomata.
  */
 public class LAutomatBuilder {
@@ -16,10 +16,10 @@ public class LAutomatBuilder {
      * @param odrediste odredišno stanje prijelaza
      * @param znak znak prijelaza
      */
-    public LAutomatBuilder dodajPrijelaz(int izvor, int odrediste, char znak){
+   /* public LAutomatBuilder dodajPrijelaz(int izvor, int odrediste, char znak){
         getNode(izvor).dodajPrijelaz(znak, getNode(odrediste));
         return this;
-    }
+    }*/
 
     /**
      * Stvara epsilon prijelaz izmeču stanja izvor i odredište.
@@ -27,17 +27,17 @@ public class LAutomatBuilder {
      * @param izvor izvorišno stanje prijelaza
      * @param odrediste odredišno stanje prijelaza
      */
-    public LAutomatBuilder dodajEPrijelaz(int izvor, int odrediste){
+   /* public LAutomatBuilder dodajEPrijelaz(int izvor, int odrediste){
         getNode(izvor).dodajEPrijelaz(getNode(odrediste));
         return this;
-    }
+    }*/
 
     /**
      * Postavlja dato stanje kao početno stanje automata.
      *
      * @param oznaka oznaka stanja
      */
-    public void setPocetnoStanje(int oznaka){
+ /*   public void setPocetnoStanje(int oznaka){
         pocetnoStanje = getNode(oznaka);
     }
 
@@ -46,7 +46,7 @@ public class LAutomatBuilder {
      *
      * @param oznaka oznaka stanja
      */
-    public void setPrihvatljivoStanje(int oznaka){
+ /*   public void setPrihvatljivoStanje(int oznaka){
         prihvatljivoStanje = getNode(oznaka);
     }
 
@@ -58,7 +58,7 @@ public class LAutomatBuilder {
     public LAutomat getLAutomat() {
         return new LAutomat(pocetnoStanje, prihvatljivoStanje);
     }
-
+/*
     private Node getNode(int oznaka) {
         Node temp = nodovi.get(oznaka);
         if(temp == null) {
@@ -66,5 +66,5 @@ public class LAutomatBuilder {
             nodovi.put(oznaka, temp);
         }
         return temp;
-    }
+    } */
 }

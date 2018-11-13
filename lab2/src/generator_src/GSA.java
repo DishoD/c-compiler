@@ -10,6 +10,7 @@ private Map<String, List<List<String>>> productions;
 private String oldStart;
 private Map<String, List<List<String>>> items;
 private char delimeter = '.';
+private Set<Node> nodes;
 
     public GSA(){
         terminals = new HashSet<>();
@@ -17,6 +18,7 @@ private char delimeter = '.';
         synTerminals = new HashSet<>();
         productions = new HashMap<String, List<List<String>>>();
         items = new HashMap<String, List<List<String>>>();
+        nodes = new HashSet<>();
     }
 
 
@@ -46,14 +48,20 @@ private void addItems(){
                last = true;
                break; // one item for new starting variable
            }
-           while(n >= 0){
-              // single production as a list of variables/terminals
-               productionItem = new ArrayList<>(singleProduction);
-               productionItem.add(n, String.valueOf(this.delimeter));
-               allItemsForVariable.add(productionItem);
-               n--;
-           }
 
+           if(singleProduction.contains("$")){
+               productionItem = new ArrayList<>();
+               productionItem.add(".");
+               allItemsForVariable.add(productionItem);  // samo jedna točkica za epsilon produkciju
+           } else {
+               while (n >= 0) {
+                   // single production as a list of variables/terminals
+                   productionItem = new ArrayList<>(singleProduction);
+                   productionItem.add(n, String.valueOf(this.delimeter));
+                   allItemsForVariable.add(productionItem);
+                   n--;
+               }
+           }
         }
        if(!entry.getKey().equals("q0")) this.items.put(entry.getKey(), allItemsForVariable);
 
@@ -78,7 +86,7 @@ private void initializeMap(){
         this.items.put("q0", new ArrayList<>());
     }*/
 
-private static Set<String> poljeUSet(String[] ulaz) {
+public static Set<String> arrayIntoSet(String[] ulaz) {
         Set<String> rezultat = new HashSet<>();
 
         for (String el : ulaz) {
@@ -87,7 +95,21 @@ private static Set<String> poljeUSet(String[] ulaz) {
         return rezultat;
     }
 
+    /*
+        Method to generate epsilon-NFA nodes based on LR items
+     */
+public void generateNodes(){
 
+    for (Map.Entry<String, List<List<String>>> entry : this.items.entrySet()) {
+        for(List<String> singleItem : entry.getValue()){
+            Node n = new Node(entry.getKey(), singleItem);
+            this.nodes.add(n);
+        }
+    }
+
+}
+    
+    
     public static void main(String[] args) throws FileNotFoundException{
 
         Scanner sc = new Scanner(new FileReader("gramatika.txt"));
@@ -100,14 +122,14 @@ private static Set<String> poljeUSet(String[] ulaz) {
             if(sb.substring(0, 3).equals("%V ")){
                 String[] variablesArray = sb.substring(3).split("\\s+");
                 generator.oldStart =  variablesArray[0]; // store old starting variable
-                generator.variables = GSA.poljeUSet(variablesArray);
+                generator.variables = GSA.arrayIntoSet(variablesArray);
 
             } else if(sb.substring(0, 3).equals("%T ")){
                 String[] terminalsArray = sb.substring(3).split("\\s+");
-                generator.terminals = GSA.poljeUSet(terminalsArray);
+                generator.terminals = GSA.arrayIntoSet(terminalsArray);
             } else if(sb.substring(0, 5).equals("%Syn ")){
                 String[] synTerminalsArray = sb.substring(5).split("\\s+");
-                generator.synTerminals = GSA.poljeUSet(synTerminalsArray);
+                generator.synTerminals = GSA.arrayIntoSet(synTerminalsArray);
             } else {
                 System.out.print("GREŠKA!");
             }
@@ -127,6 +149,7 @@ private static Set<String> poljeUSet(String[] ulaz) {
             if(line.startsWith("<")){ // this indicated that we will encounter LHS of the production
                 productionLHS = line.trim();
             } else if(line.contains("$")) { // found an epsilon production
+                productionRHS.clear();
                 productionRHS.add("$");
                 add = true;
             } else { // found non-epsilon production
@@ -146,11 +169,16 @@ private static Set<String> poljeUSet(String[] ulaz) {
             add = false;
         }
         productionRHS.clear();
-       productionRHS.add(generator.oldStart); // it first
+       productionRHS.add(generator.oldStart); // extra production
 
-        generator.addProduction("q0", productionRHS);
+       generator.addProduction("q0", productionRHS);
        generator.addItems();
-        System.out.println(generator.items.entrySet());
+
+       generator.generateNodes();
+
+       for(Node n : generator.nodes){
+           System.out.println(n.getItemLHS() + " - > " + n.getItemRHS());
+       }
 
 
     }

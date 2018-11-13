@@ -7,12 +7,14 @@ import java.util.Map;
  * Čvor(stanje) u e-NKA.
  */
 public class Node {
-    private int oznaka;
+    private String itemLHS;
+    private List<String> itemRHS;
     private Map<Character, List<Node>> prijelazi = new HashMap<>();
     private List<Node> EPrijelazi = new ArrayList<>();
 
-    public Node(int oznaka) {
-        this.oznaka = oznaka;
+    public Node(String itemLHS, List<String> itemRHS) {
+        this.itemRHS = itemRHS;
+        this.itemLHS = itemLHS;
     }
 
     /**
@@ -57,9 +59,16 @@ public class Node {
     }
 
     /**
-     * @return oznaka čvora
+     * @return right-hand side of the item
      */
-    public int getOznaka() {
-        return oznaka;
+    public List<String> getItemRHS() {
+        return itemRHS;
+    }
+
+    /**
+     * @return left-hand side of the item
+     */
+    public String getItemLHS(){
+        return itemLHS;
     }
 }
