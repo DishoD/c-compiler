@@ -58,6 +58,13 @@ public class Node {
         return prijelazi.get(znak);
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(!(o instanceof Node)) return false;
+        Node n = (Node)o;
+        return (this.itemRHS == n.getItemRHS() && this.itemLHS == n.getItemLHS());
+    }
+
     /**
      * @return right-hand side of the item
      */
@@ -71,4 +78,6 @@ public class Node {
     public String getItemLHS(){
         return itemLHS;
     }
+
+
 }
