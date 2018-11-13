@@ -6,11 +6,16 @@ public class GSA{
 private Set<String> terminals;
 private Set<String> variables;
 private Set<String> synTerminals;
+private Map<String, String> productions;
 
 
+private void addProduction(String variable, String rhs){ // RHS = right-hand side of the production
+    productions.put(variable, rhs);
+}
 
-    private static Set<String> poljeUSet(String[] ulaz) {
+private static Set<String> poljeUSet(String[] ulaz) {
         Set<String> rezultat = new HashSet<>();
+
         for (String el : ulaz) {
             rezultat.add(el);
         }
@@ -46,7 +51,24 @@ private Set<String> synTerminals;
         System.out.print(generator.terminals.toString());
         System.out.print(generator.synTerminals.toString());
 
+        String productionLHS = null;
+        String productionRHS = null;
+        boolean add = false;
+        while(sc.hasNext()){
+            String production = sc.nextLine();
+            System.out.println(production);
+            if(!production.startsWith(" ")){ // this indicated that we will encounter LHS of the production
+                productionLHS = production.substring(1).trim();
+            } else if(production.startsWith(" ") && production.contains("$")) { // found an epsilon production
+                productionRHS = "$";
+                add = true;
+            } else { // found non-epsilon production
+                productionRHS = production.substring(1);
+                add = true;
+            }
+            if(add) generator.productions.put(productionLHS, productionRHS);
+            add = false;
+        }
+        System.out.println(generator.productions.entrySet());
     }
-
-
 }
