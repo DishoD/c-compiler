@@ -1,3 +1,5 @@
+package generator_src;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
