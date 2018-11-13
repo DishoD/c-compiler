@@ -6,11 +6,27 @@ public class GSA{
 private Set<String> terminals;
 private Set<String> variables;
 private Set<String> synTerminals;
-private Map<String, String> productions;
+private Map<String, List<String>> productions;
+
+    public GSA(){
+        terminals = new HashSet<>();
+        variables = new HashSet<>();
+        synTerminals = new HashSet<>();
+        productions = new HashMap<String, List<String>>();
+    }
 
 
 private void addProduction(String variable, String rhs){ // RHS = right-hand side of the production
-    productions.put(variable, rhs);
+            List<String> productionsRHSList = productions.get(variable);
+            productionsRHSList.add(rhs);
+            productions.replace(variable, productionsRHSList);
+
+}
+
+private void initializeMap(){
+        for(String v : this.variables){
+            this.productions.put(v, new LinkedList<>());
+        }
 }
 
 private static Set<String> poljeUSet(String[] ulaz) {
@@ -47,26 +63,35 @@ private static Set<String> poljeUSet(String[] ulaz) {
             }
         }
 
-        System.out.print(generator.variables.toString());
-        System.out.print(generator.terminals.toString());
-        System.out.print(generator.synTerminals.toString());
+        System.out.println(generator.variables.toString());
+        System.out.println(generator.terminals.toString());
+        System.out.println(generator.synTerminals.toString());
+        generator.initializeMap();
 
-        String productionLHS = null;
+        String productionLHS = null ;
         String productionRHS = null;
         boolean add = false;
         while(sc.hasNext()){
-            String production = sc.nextLine();
-            System.out.println(production);
-            if(!production.startsWith(" ")){ // this indicated that we will encounter LHS of the production
-                productionLHS = production.substring(1).trim();
-            } else if(production.startsWith(" ") && production.contains("$")) { // found an epsilon production
+            String line = sc.nextLine();
+            if(line.startsWith("<")){ // this indicated that we will encounter LHS of the production
+                productionLHS = line.trim();
+            } else if(line.contains("$")) { // found an epsilon production
                 productionRHS = "$";
                 add = true;
             } else { // found non-epsilon production
-                productionRHS = production.substring(1);
+                productionRHS = line.substring(1);
                 add = true;
             }
-            if(add) generator.productions.put(productionLHS, productionRHS);
+
+
+
+            if(add) {
+                try {
+                    generator.addProduction(productionLHS, productionRHS.trim());
+                } catch(Exception e) {
+                    System.out.println("GREŠKA");
+                }
+            }
             add = false;
         }
         System.out.println(generator.productions.entrySet());
