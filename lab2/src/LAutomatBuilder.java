@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * Razred koji služi za laku izgradnju LAutomata.
@@ -7,7 +8,7 @@ import java.util.Map;
 public class LAutomatBuilder {
     private Map<Integer, Node> nodovi = new HashMap<>();
     private Node pocetnoStanje;
-    private Node prihvatljivoStanje;
+    private Set<Node> prihvatljivaStanja;
 
     /**
      * Spaja stanje izvor sa stanjem odrediste prijelazom za dani znak.
@@ -16,10 +17,10 @@ public class LAutomatBuilder {
      * @param odrediste odredišno stanje prijelaza
      * @param znak znak prijelaza
      */
-   /* public LAutomatBuilder dodajPrijelaz(int izvor, int odrediste, char znak){
-        getNode(izvor).dodajPrijelaz(znak, getNode(odrediste));
+    public LAutomatBuilder dodajPrijelaz(int izvor, int odrediste, String znak){
+     //   getNode(izvor).dodajPrijelaz(znak, getNode(odrediste));
         return this;
-    }*/
+    }
 
     /**
      * Stvara epsilon prijelaz izmeču stanja izvor i odredište.
@@ -27,18 +28,18 @@ public class LAutomatBuilder {
      * @param izvor izvorišno stanje prijelaza
      * @param odrediste odredišno stanje prijelaza
      */
-   /* public LAutomatBuilder dodajEPrijelaz(int izvor, int odrediste){
-        getNode(izvor).dodajEPrijelaz(getNode(odrediste));
+    public LAutomatBuilder dodajEPrijelaz(int izvor, int odrediste){
+     //   getNode(izvor).dodajEPrijelaz(getNode(odrediste));
         return this;
-    }*/
+    }
 
     /**
      * Postavlja dato stanje kao početno stanje automata.
      *
      * @param oznaka oznaka stanja
      */
- /*   public void setPocetnoStanje(int oznaka){
-        pocetnoStanje = getNode(oznaka);
+    public void setPocetnoStanje(int oznaka){
+      //  pocetnoStanje = getNode(oznaka);
     }
 
     /**
@@ -46,9 +47,9 @@ public class LAutomatBuilder {
      *
      * @param oznaka oznaka stanja
      */
- /*   public void setPrihvatljivoStanje(int oznaka){
+    /*   public void setPrihvatljivoStanje(int oznaka){
         prihvatljivoStanje = getNode(oznaka);
-    }
+    }*/
 
     /**
      * Konstruira automat za trenutnu tablicu prijelaza i stanja i vraća ga.
@@ -56,15 +57,15 @@ public class LAutomatBuilder {
      * @return izgrađeni automat
      */
     public LAutomat getLAutomat() {
-        return new LAutomat(pocetnoStanje, prihvatljivoStanje);
+        return new LAutomat(pocetnoStanje, prihvatljivaStanja);
     }
-/*
-    private Node getNode(int oznaka) {
+
+/*    private Node getNode(int oznaka) {
         Node temp = nodovi.get(oznaka);
         if(temp == null) {
             temp = new Node(oznaka);
             nodovi.put(oznaka, temp);
         }
         return temp;
-    } */
+    }*/
 }

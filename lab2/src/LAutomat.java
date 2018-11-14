@@ -25,21 +25,21 @@ public class LAutomat {
     }
 
     private Node pocetnoStanje;
-    private Node prihvatljivoStanje;
+    private Set<Node> prihvatljivaStanja;
     private Set<Node> trenutnaStanja = new HashSet<>();
     private LAutomatStatus status;
     private List<Akcija> akcije = new ArrayList<>();
 
     /**
-     * Inicijalizira novi automat sa zadanim početnim i prihvatljivim stanjem. Automatov status je 'STOPIRAN'.
+     * Inicijalizira novi automat sa zadanim početnim i skupom prihvatljivih stanja. Automatov status je 'STOPIRAN'.
      * Automat se mora pokrenuti nakon inicijalizacije.
      *
      * @param pocetnoStanje početno stanje automata
-     * @param prihvatljivoStanje prihvatljivo stanje automat
+     * @param prihvatljivaStanja skup prihvatljivih stanja automat
      */
-    public LAutomat(Node pocetnoStanje, Node prihvatljivoStanje) {
+    public LAutomat(Node pocetnoStanje, Set<Node> prihvatljivaStanja) {
         this.pocetnoStanje = pocetnoStanje;
-        this.prihvatljivoStanje = prihvatljivoStanje;
+        this.prihvatljivaStanja = prihvatljivaStanja;
         this.status = LAutomatStatus.STOPIRAN;
     }
 
@@ -85,16 +85,12 @@ public class LAutomat {
     }
 
     /**
-     * Identificira trenutni status automata i postavlja ga kao zadani.
+     * Svaka LR stavka je prihvatljiva!
      * @return trenutni status automata
      */
     private LAutomatStatus postaviStatus(){
-        if(trenutnaStanja.isEmpty()) {
-            status = LAutomatStatus.STOPIRAN;
-            return status;
-        }
-        status = (trenutnaStanja.contains(prihvatljivoStanje)) ? LAutomatStatus.PRIHVATLJIV : LAutomatStatus.RADI;
-        return status;
+     return LAutomatStatus.PRIHVATLJIV;
+
     }
 
     public LAutomatStatus getStatus() {

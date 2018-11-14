@@ -43,6 +43,7 @@ public class GSA {
 
                 if (entry.getKey().equals("q0")) { // special case
                     productionItem = singleProduction;
+                    productionItem.add(0, String.valueOf(this.delimeter));
                     allItemsForVariable.add(productionItem);
                     this.items.put("q0", allItemsForVariable);
                     last = true;
@@ -136,13 +137,12 @@ public class GSA {
             if (index == n.getItemRHS().size() - 1 || n.getItemLHS().equals("q0")) {
                 continue;
             } else {
-                Node next;
+
                 for (Node singleNode : this.nodes) { // iterating over all nodes
                     if ((singleNode.getItemLHS().equals(n.getItemLHS()))
                             && (singleNode.getItemRHS().equals(swapDotSymbol(new ArrayList(n.getItemRHS()))))) {
-                        next = singleNode; //
                         nextSymbol = n.getItemRHS().get(index+1);
-                        n.dodajPrijelaz(nextSymbol, next);
+                        n.dodajPrijelaz(nextSymbol, singleNode);
 
                     }
                 }
@@ -150,12 +150,10 @@ public class GSA {
             // add epsilon transition only if the variable follows dot
             if(this.terminals.contains(nextSymbol)) continue;
 
-            System.out.println(n.getItemLHS() + "-> " + n.getItemRHS());
-
             for (Node singleNode : this.nodes) {
                 if(singleNode.getItemLHS().equals(nextSymbol) && singleNode.getItemRHS().get(0).equals(".")) { // not to every item; dot on index 0!
                     n.dodajEPrijelaz(singleNode);
-                    System.out.println("dodan epsilon"); // be careful, possible loops
+
 
                 }
             }
@@ -229,9 +227,14 @@ public class GSA {
         generator.addNodeTransitions();
 
 
-     /*   for(Node singleNode : generator.nodes){
+        for(Node singleNode : generator.nodes){
             System.out.println(singleNode);
-            System.out.println();
-        }*/
+            singleNode.printAllTransitions(); // correct print
+        }
+
+
+        // izgradnja automata
+
+     //   LAutomat a = new LAutomat(generator.)
     }
 }

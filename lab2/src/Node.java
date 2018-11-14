@@ -87,9 +87,28 @@ public class Node {
             temp.append(singleSimbol + " ");
         }
 
-        String s =  System.lineSeparator() + this.itemLHS + "->" + temp.toString() + this.prijelazi.entrySet().toString()
-             +   System.lineSeparator();
+        String s =  System.lineSeparator() + this.itemLHS + "->" + temp.toString();
         return s;
+    }
+
+    public void printAllTransitions(){
+        for(Map.Entry<String, List<Node>> p : this.prijelazi.entrySet()){
+            System.out.print("znak = " + p.getKey());
+            for(Node n : p.getValue()){
+                System.out.println(n);
+            }
+            System.out.println("-------");
+        }
+        if(this.EPrijelazi.isEmpty()){
+            System.out.println("Nema eps. prijelaza");
+
+        } else {
+            for (Node e : this.EPrijelazi) {
+                System.out.println("eps " + e);
+            }
+        }
+        System.out.println("#####################################################");
+
     }
 
 }
