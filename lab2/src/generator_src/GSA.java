@@ -129,11 +129,12 @@ public class GSA {
      */
     public void addNodeTransitions(){
         String nextSymbol = null;
+        int index; // index of dot
         for (Node n : this.nodes) {
-            int index = n.getItemRHS().indexOf(".");
 
+            index = n.getItemRHS().indexOf(".");
             if (index == n.getItemRHS().size() - 1 || n.getItemLHS().equals("q0")) {
-                // IGNORE - special cases
+                continue;
             } else {
                 Node next;
                 for (Node singleNode : this.nodes) { // iterating over all nodes
@@ -146,15 +147,16 @@ public class GSA {
                     }
                 }
             }
-            // add epsilon transition
+            // add epsilon transition only if the variable follows dot
+            if(this.terminals.contains(nextSymbol)) continue;
 
-            // find items with nextSymbol as LHS
+            System.out.println(n.getItemLHS() + "-> " + n.getItemRHS());
+
             for (Node singleNode : this.nodes) {
-                if(singleNode.getItemLHS().equals(nextSymbol)) {
+                if(singleNode.getItemLHS().equals(nextSymbol) && singleNode.getItemRHS().get(0).equals(".")) { // not to every item; dot on index 0!
                     n.dodajEPrijelaz(singleNode);
-                    System.out.println(n.getItemLHS() + "->" + n.getItemRHS()
-                    + "P" + nextSymbol
-                    );
+                    System.out.println("dodan epsilon"); // be careful, possible loops
+
                 }
             }
         }
