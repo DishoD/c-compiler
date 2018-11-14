@@ -109,6 +109,11 @@ public class GSA {
 
     }
 
+    /**
+     *
+     * @param list right-hand side of LR item
+     * @return list with swapped positions of dot and next symbol
+     */
     public static List<String> swapDotSymbol(List<String> list) {
         int index = list.indexOf(".");
         if(index == list.size()){
@@ -119,6 +124,41 @@ public class GSA {
         return list;
     }
 
+    /**
+     * Adding transitions to other nodes
+     */
+    public void addNodeTransitions(){
+        String nextSymbol = null;
+        for (Node n : this.nodes) {
+            int index = n.getItemRHS().indexOf(".");
+
+            if (index == n.getItemRHS().size() - 1 || n.getItemLHS().equals("q0")) {
+                // IGNORE - special cases
+            } else {
+                Node next;
+                for (Node singleNode : this.nodes) { // iterating over all nodes
+                    if ((singleNode.getItemLHS().equals(n.getItemLHS()))
+                            && (singleNode.getItemRHS().equals(swapDotSymbol(new ArrayList(n.getItemRHS()))))) {
+                        next = singleNode; //
+                        nextSymbol = n.getItemRHS().get(index+1);
+                        n.dodajPrijelaz(nextSymbol, next);
+
+                    }
+                }
+            }
+            // add epsilon transition
+
+            // find items with nextSymbol as LHS
+            for (Node singleNode : this.nodes) {
+                if(singleNode.getItemLHS().equals(nextSymbol)) {
+                    n.dodajEPrijelaz(singleNode);
+                    System.out.println(n.getItemLHS() + "->" + n.getItemRHS()
+                    + "P" + nextSymbol
+                    );
+                }
+            }
+        }
+    }
 
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -128,7 +168,7 @@ public class GSA {
 
         for (int i = 1; i <= 3; i++) {
             sb = new StringBuilder(sc.nextLine());
-            System.out.println(sb);
+
             if (sb.substring(0, 3).equals("%V ")) {
                 String[] variablesArray = sb.substring(3).split("\\s+");
                 generator.oldStart = variablesArray[0]; // store old starting variable
@@ -164,7 +204,6 @@ public class GSA {
                 add = true;
             } else { // found non-epsilon production
                 String[] tempArrayRHS = line.substring(1).split("\\s+");
-                System.out.println(tempArrayRHS[0]);
                 productionRHS = new ArrayList<>(Arrays.asList(tempArrayRHS));
 
                 add = true;
@@ -185,27 +224,12 @@ public class GSA {
         generator.addItems();
 
         generator.generateNodes();
-
-        for (Node n : generator.nodes) {
-            int index = n.getItemRHS().indexOf(".");
-            System.out.println(n.getItemLHS() + " - > " + n.getItemRHS());
-            if (index == n.getItemRHS().size() - 1 || n.getItemLHS().equals("q0")) {
-                System.out.println("PAZI!!!");// special cases
-            } else {
-                Node next;
-                for (Node singleNode : generator.nodes) { // iterating over all nodes
-                    if ((singleNode.getItemLHS().equals(n.getItemLHS()))
-                            && (singleNode.getItemRHS().equals(swapDotSymbol(new ArrayList(n.getItemRHS()))))) {
-                        next = singleNode;
-                        System.out.println("Ako primim: " + n.getItemRHS().get(index)
-                                + "iduća je" + next.getItemLHS() + " -> " + next.getItemRHS());
-                    }
-                }
+        generator.addNodeTransitions();
 
 
-            }
-
-
-        }
+     /*   for(Node singleNode : generator.nodes){
+            System.out.println(singleNode);
+            System.out.println();
+        }*/
     }
 }

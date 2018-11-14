@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.lang.StringBuilder;
 
 /**
  * Čvor(stanje) u e-NKA.
@@ -9,7 +10,7 @@ import java.util.Map;
 public class Node {
     private String itemLHS;
     private List<String> itemRHS;
-    private Map<Character, List<Node>> prijelazi = new HashMap<>();
+    private Map<String, List<Node>> prijelazi = new HashMap<>();
     private List<Node> EPrijelazi = new ArrayList<>();
 
     public Node(String itemLHS, List<String> itemRHS) {
@@ -32,7 +33,7 @@ public class Node {
      * @param znak znak prijelaza
      * @param node odredišni čvor prijelaza
      */
-    public void dodajPrijelaz(char znak, Node node) {
+    public void dodajPrijelaz(String znak, Node node) {
         List<Node> n = prijelazi.get(znak);
         if(n == null) {
             n = new ArrayList<>();
@@ -51,10 +52,10 @@ public class Node {
     }
 
     /**
-     * @param znak znak prijelaza
+     * @param znak znak prijelaza (završni ili nezavršni znak)
      * @return Sva stanja prijelaza za zadani znak iz ovog stanja.
      */
-    public List<Node> getPrijelazi(char znak) {
+    public List<Node> getPrijelazi(String znak) {
         return prijelazi.get(znak);
     }
 
@@ -79,5 +80,16 @@ public class Node {
         return itemLHS;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder temp = new StringBuilder();
+        for(String singleSimbol : this.getItemRHS()){
+            temp.append(singleSimbol + " ");
+        }
+
+        String s =  System.lineSeparator() + this.itemLHS + "->" + temp.toString() + this.prijelazi.entrySet().toString()
+             +   System.lineSeparator();
+        return s;
+    }
 
 }

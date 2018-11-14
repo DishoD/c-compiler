@@ -63,7 +63,7 @@ public class LAutomat {
      * @param znak za koji znak se izvršavaju prijelazi
      * @return status automata nakon izvršenih prijelaza
      */
-    public LAutomatStatus prijelaz(char znak) {
+    public LAutomatStatus prijelaz(String znak) {
         if(status == LAutomatStatus.STOPIRAN) return status;
         Set<Node> novaStanja = new HashSet<>();
 
