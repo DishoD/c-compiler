@@ -1,9 +1,5 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.lang.StringBuilder;
-import java.util.Set;
 
 /**
  * Čvor(stanje) u e-NKA.
@@ -12,8 +8,8 @@ public class Node {
     private int oznaka;
     private String itemLHS;
     private List<String> itemRHS;
-    private Map<String, List<Node>> prijelazi = new HashMap<>();
-    private List<Node> EPrijelazi = new ArrayList<>();
+    public Map<String, List<Node>> prijelazi = new HashMap<>();
+    public List<Node> EPrijelazi = new ArrayList<>();
 
     // ##################################################
 
@@ -23,6 +19,17 @@ public class Node {
         this.oznaka = oznaka;
         this.itemRHS = itemRHS;
         this.itemLHS = itemLHS;
+        skup = new HashSet<>();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + itemLHS.hashCode();
+        result = prime * result + itemRHS.hashCode();
+        result = prime * result + oznaka;
+        return result;
     }
 
     /**
@@ -66,12 +73,22 @@ public class Node {
         return prijelazi.get(znak);
     }
 
+    /**
+     * Overloadana metoda koja će vratit mapu svih prijelaza određenog čvora (bez eps.!)
+     *
+     * @return mapa svih prijelaza
+     */
+    public Map<String, List<Node>> getPrijelazi() {
+        return this.prijelazi;
+    }
+
+
     @Override
     public boolean equals(Object o){
         if(!(o instanceof Node)) return false;
         Node n = (Node)o;
         return (this.itemRHS.equals(n.getItemRHS()) && this.itemLHS.equals(n.getItemLHS()) &&
-                this.oznaka == n.oznaka);
+                this.skup.equals(n.skup));
     }
 
 
@@ -98,6 +115,30 @@ public class Node {
         return oznaka;
     }
 
+    public Set<String> getSkup() {
+        return skup;
+    }
+
+    public void setSkup(Set<String> skup) {
+        this.skup = skup;
+    }
+
+
+    /**
+     *
+     * @param el element koji će se dodati u skup
+     */
+    public void addToSkup(String el){
+        this.skup.add(el);
+    }
+
+    /**
+     * Overloading gornje metode addToSkup
+     * @return
+     */
+    public void addToSkup(Set<String> skup){
+        this.skup.addAll(skup);
+    }
     @Override
     public String toString(){
         StringBuilder temp = new StringBuilder();
@@ -105,7 +146,7 @@ public class Node {
             temp.append(singleSimbol + " ");
         }
 
-        String s =  System.lineSeparator() + this.oznaka + ": " + this.itemLHS + "->" + temp.toString();
+        String s =  System.lineSeparator() + this.oznaka + ": " + this.itemLHS + "->" + temp.toString() + "{" + this.skup.toString() + "}";
         return s;
     }
 
