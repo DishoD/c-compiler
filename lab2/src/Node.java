@@ -28,7 +28,7 @@ public class Node {
         int result = 1;
         result = prime * result + itemLHS.hashCode();
         result = prime * result + itemRHS.hashCode();
-        result = prime * result + oznaka;
+        result = prime * result + skup.hashCode();
         return result;
     }
 
@@ -88,7 +88,7 @@ public class Node {
         if(!(o instanceof Node)) return false;
         Node n = (Node)o;
         return (this.itemRHS.equals(n.getItemRHS()) && this.itemLHS.equals(n.getItemLHS()) &&
-                this.skup.equals(n.skup));
+                this.skup.equals(n.getSkup()));
     }
 
 
