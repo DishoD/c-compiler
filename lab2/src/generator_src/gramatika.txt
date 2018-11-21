@@ -1,19 +1,11 @@
-%V <A> <B> <C> <D> <E>
-%T a b c d e f
-%Syn a
+%V <S> <A> <B>
+%T a
+%Syn <A>
+<S>
+ <A>
 <A>
- <B> <C> c
+ <B> <A>
+ $
 <B>
- $
- b <C> <D> <E>
-<A>
- e <D> <B>
-<C>
- <D> a <B>
- c a
-<D>
- $
- d <D>
-<E>
- e <A> f
- c
+ a <B>
+ b
