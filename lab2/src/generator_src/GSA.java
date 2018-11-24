@@ -14,7 +14,7 @@ public class GSA {
     private String oldStart;
     private Map<String, List<List<String>>> nodeKernels;
     private char delimeter = '.';
-    private char stop = '∎';
+    private char stop = '⊥';
     private Set<Node> nodes; // kostur za prave LR(1) stavke, tj. stanja eps enka
     private int countProductions = 0;
     private Set<Node> epsNodes;
@@ -40,9 +40,10 @@ public class GSA {
     }
 
     /**
-     *  Dodavanje produkcija
+     * Dodavanje produkcija
+     *
      * @param variable - oznacava nezavrsni znak
-     * @param rhs - desna strana produkcije
+     * @param rhs      - desna strana produkcije
      */
     private void addProduction(String variable, List<String> rhs) {
         List<List<String>> productionsRHSList = productions.get(variable); // vraca listu lista
@@ -65,14 +66,6 @@ public class GSA {
 
                 int n = singleProduction.size();
 
-               /* if (entry.getKey().equals("q0")) { // poseban slučaj
-                    productionItem = singleProduction;
-                    productionItem.add(0, String.valueOf(this.delimeter));
-                    allItemsForVariable.add(productionItem);
-                    this.nodeKernels.put("q0", allItemsForVariable);
-                    break; // jedna stavka za novi nezavršni
-                }*/
-
                 if (singleProduction.contains("$")) {
                     productionItem = new ArrayList<>();
                     productionItem.add(".");
@@ -86,9 +79,9 @@ public class GSA {
                     }
                 }
             }
-           /* if (!entry.getKey().equals("q0"))*/ this.nodeKernels.put(entry.getKey(), allItemsForVariable);
-        }
 
+            this.nodeKernels.put(entry.getKey(), allItemsForVariable);
+        }
     }
 
     /**
@@ -102,10 +95,9 @@ public class GSA {
     }
 
     /**
-     *
      * @param ulaz - Polje stringova
      * @return - Set stringova
-     * */
+     */
     public static Set<String> arrayIntoSet(String[] ulaz) {
         Set<String> rezultat = new HashSet<>();
 
@@ -116,9 +108,9 @@ public class GSA {
     }
 
     /**
-        Generiranje STANJA za eps-NKA, to nisu jezgre stavki
-        POPRAVITI; ZASAD JE GENERIRANJE  jezgri stavki
-        prebacivanje iz vrijednosti entryja mape u skup
+     * Generiranje STANJA za eps-NKA, to nisu jezgre stavki
+     * POPRAVITI; ZASAD JE GENERIRANJE  jezgri stavki
+     * prebacivanje iz vrijednosti entryja mape u skup
      */
     public void generateNodeKernels() {
 
@@ -130,8 +122,7 @@ public class GSA {
                 nodeId++;
             }
         }
-        this.countProductions = nodeId-1; // treba - 1
-
+        this.countProductions = nodeId - 1; // treba - 1
     }
 
     /* iz node kernela počevši od q0 pronaći ostale skupove i pridijeliti ih stanima*/
@@ -149,11 +140,9 @@ public class GSA {
             }
         }
 
-
         firstNode.addToSkup(String.valueOf(this.stop)); // pronasli smo prvoga...
 
         Node n = firstNode; // n je radni cvor
-
         this.epsNodes.add(firstNode); // prvo pravo stanje eps-NKA
 
         boolean addEps = true;
@@ -165,25 +154,24 @@ public class GSA {
         while (true) {
             Set<String> SetToAdd = new HashSet<>();
 
-            usedNodes.add(n); // dodamo iskoristeni cvor!!!
+            usedNodes.add(n); // oznacavamo da smo cvor iskoristili
             int index = n.getItemRHS().indexOf(String.valueOf(this.delimeter));// pronadji indeks tocke
 
-            if (index == n.getItemRHS().size() - 1) { // samo tockica, idemo dalje
-             if(stackForNextNodes.size() == 0 || n == null) break;
+            if (index == n.getItemRHS().size() - 1) { // samo tockica i nista drugo, idemo dalje
+                if (stackForNextNodes.size() == 0 || n == null) break;
                 n = stackForNextNodes.get(0); // uzimanje sa stoga, iduci cvor
-                stackForNextNodes.remove(0); // skidanje sa stoga*/
+                stackForNextNodes.remove(0); // skidanje sa stoga
 
                 continue;
-            } else if ((index + 1) == (n.getItemRHS().size() - 1)) { // udzb. 4.c ii)
-                // u epsilon samo prepisemo svoj..
+            } else if ((index + 1) == (n.getItemRHS().size() - 1)) {
+
                 if (this.terminals.contains(n.getItemRHS().get(index + 1))) {
-                    // ne gledamo epsilone! samo obicni
                     addEps = false;
                 } else {
-                    SetToAdd.addAll(new HashSet<>(n.getSkup())); // referenca svaki put, naš skup unija ništa = naš skup
+                    SetToAdd.addAll(new HashSet<>(n.getSkup()));
                     addEps = true;
                 }
-            } else { // najcesci slucaj
+            } else {
                 if (this.terminals.contains(n.getItemRHS().get(index + 1))) { // nema eps. prijelaze!
                     // System.out.println("Nema eps. .");
                     addEps = false;
@@ -192,111 +180,108 @@ public class GSA {
                     // ######################################################### najzeznutiji slucaj
                     SetToAdd.addAll(new HashSet<>(this.variableSetFirst.get(n.getItemRHS().get(index + 1))));
 
-                     // prazni nezavrsni odma iza tocke
-                             // 4. c) i)
-            // beta niz, ono iza nezavrsnog znaka
-                        boolean isEmpty = true;
-                        int index2 = index + 2; // pocetak bete
+                    // prazni nezavrsni odma iza tocke
+                    // beta niz, ono iza nezavrsnog znaka
+                    boolean isEmpty = true;
+                    int index2 = index + 2; // pocetak bete
 
-                        while (isEmpty && index2 <= n.getItemRHS().size()-1) {
+                    while (isEmpty && index2 <= n.getItemRHS().size() - 1) {
 
-                            if (this.emptyVariables.contains(n.getItemRHS().get(index2))) {
-                                SetToAdd.addAll(this.variableSetFirst.get(n.getItemRHS().get(index + 2))); // unija zapocinje od beta i ovaj nas skup
-                            } else { // nakon nezavrsnog se ne nalazi prazni nezavrsni znak; u ovoj grani se zaustavljamo
-                                if(this.terminals.contains(n.getItemRHS().get(index2))){ // zavrsni
-                                    SetToAdd.add(n.getItemRHS().get(index2));
-                                } else{
-                                    SetToAdd.addAll(new HashSet<>(this.variableSetFirst.get(n.getItemRHS().get(index2))));
-                                }
-                                isEmpty = false;
+                        if (this.emptyVariables.contains(n.getItemRHS().get(index2))) {
+                            SetToAdd.addAll(this.variableSetFirst.get(n.getItemRHS().get(index + 2))); // unija zapocinje od beta i ovaj nas skup
+                        } else { // nakon nezavrsnog se ne nalazi prazni nezavrsni znak; u ovoj grani se zaustavljamo
+                            if (this.terminals.contains(n.getItemRHS().get(index2))) { // zavrsni
+                                SetToAdd.add(n.getItemRHS().get(index2));
+                            } else {
+                                SetToAdd.addAll(new HashSet<>(this.variableSetFirst.get(n.getItemRHS().get(index2))));
                             }
-                            index2++;
-                        } // izlazak iz while petlje
-
-                        // ako je niz beta niz praznih nezavrsnih tada
-                        if(index2 >= n.getItemRHS().size() && this.emptyVariables.contains(
-                                n.getItemRHS().get(n.getItemRHS().size()-1)
-                        )){
-                            SetToAdd.addAll(n.getSkup()); // udzbenik 4. c ii)
+                            isEmpty = false;
                         }
-                     // ################################################################
+                        index2++;
+                    } // izlazak iz while petlje
+
+                    // ako je niz beta niz praznih nezavrsnih tada
+                    if (index2 >= n.getItemRHS().size() && this.emptyVariables.contains(
+                            n.getItemRHS().get(n.getItemRHS().size() - 1)
+                    )) {
+                        SetToAdd.addAll(n.getSkup()); // udzbenik 4. c ii)
                     }
+                    // ################################################################
                 }
-                if (addEps) {
-                    List<Node> s = n.getEPrijelazi();
-                    // stackForNextNodes.addAll(s); // epsilon stanja dodamo na obradu!
-                    for (Node e : s) {
+            }
+            if (addEps) {
+                List<Node> s = n.getEPrijelazi();
+                // stackForNextNodes.addAll(s); // epsilon stanja dodamo na obradu!
+                for (Node e : s) {
 
-                        // e.addToSkup(SetToAdd); // pridijelimo im skupove koje trebaju imat
-                        Node temp = new Node(label, e.getItemLHS(), e.getItemRHS());
-                        // obavezno
-                        temp.addToSkup(new HashSet<>(SetToAdd));
-                        temp.prijelazi = new HashMap<>(e.getPrijelazi());
-                        temp.EPrijelazi = new ArrayList<Node>(e.getEPrijelazi());
-                       if(!this.epsNodes.contains(temp)){
-                            f1 = true;
-                           this.epsNodes.add(temp); // dodamo LR(1) stavku!
-                       }
-                        if (!usedNodes.contains(temp)){
-                            f2 = true;
-                            stackForNextNodes.add(temp); // moramo pamtit na stogu koji smo dodali
-                        }
-                        if(f1 && f2){
-                            label++;
-                        }
-                        f1 = f2 = false; // reset
-
+                    // e.addToSkup(SetToAdd); // pridijelimo im skupove koje trebaju imat
+                    Node temp = new Node(label, e.getItemLHS(), e.getItemRHS());
+                    // obavezno
+                    temp.addToSkup(new HashSet<>(SetToAdd));
+                    temp.prijelazi = new HashMap<>(e.getPrijelazi());
+                    temp.EPrijelazi = new ArrayList<Node>(e.getEPrijelazi());
+                    if (!this.epsNodes.contains(temp)) {
+                        f1 = true;
+                        this.epsNodes.add(temp); // dodamo LR(1) stavku!
                     }
+                    if (!usedNodes.contains(temp)) {
+                        f2 = true;
+                        stackForNextNodes.add(temp); // moramo pamtit na stogu koji smo dodali
+                    }
+                    if (f1 && f2) {
+                        label++;
+                    }
+                    f1 = f2 = false; // reset
+
                 }
-                // ####################  "obicnim" prijelazim dodaj iste skupove, obicne treba dodati!
-                //if (!n.getItemLHS().equals("q0")) { // ne uzimamo u obzir dodatni pocetni nezavrsni znak
-                    for (Map.Entry<String, List<Node>> m : n.getPrijelazi().entrySet()) {
-                        List<Node> lista = m.getValue();
-                        for (Node strelicaU : lista) {
-                            //   strelicaU.addToSkup(n.getSkup()); // prepišemo!!!
-                            Node temp = new Node(label, strelicaU.getItemLHS(), strelicaU.getItemRHS());
-                            temp.EPrijelazi = new ArrayList<Node>(strelicaU.getEPrijelazi());
-                            temp.addToSkup(new HashSet<>(n.getSkup()));
-                            temp.prijelazi = new HashMap<>(strelicaU.prijelazi);
-                            if(!this.epsNodes.contains(temp)){
-                                f1 = true;
-                                this.epsNodes.add(temp);
-                            }
-
-                            if (!usedNodes.contains(temp)) {
-                                f2 = true;
-                                stackForNextNodes.add(temp);
-                            }
-                            if(f1 && f2){
-                                label++;
-                            }
-                            f1 = f2 = false;
-                        }
+            }
+            // ####################  "obicnim" prijelazim dodaj iste skupove, obicne treba dodati!
+            //if (!n.getItemLHS().equals("q0")) { // ne uzimamo u obzir dodatni pocetni nezavrsni znak
+            for (Map.Entry<String, List<Node>> m : n.getPrijelazi().entrySet()) {
+                List<Node> lista = m.getValue();
+                for (Node strelicaU : lista) {
+                    //   strelicaU.addToSkup(n.getSkup()); // prepišemo!!!
+                    Node temp = new Node(label, strelicaU.getItemLHS(), strelicaU.getItemRHS());
+                    temp.EPrijelazi = new ArrayList<Node>(strelicaU.getEPrijelazi());
+                    temp.addToSkup(new HashSet<>(n.getSkup()));
+                    temp.prijelazi = new HashMap<>(strelicaU.prijelazi);
+                    if (!this.epsNodes.contains(temp)) {
+                        f1 = true;
+                        this.epsNodes.add(temp);
                     }
-                //} zbog ovog je za gramatika100 bilo 107 umjesto 108
 
-           // ispraznili smo sve
-                n = stackForNextNodes.get(0); // uzimanje sa stoga, iduci cvor
-                stackForNextNodes.remove(0); // skidanje sa stoga*/
-            if(stackForNextNodes.size() == 0 && n == null) break;
+                    if (!usedNodes.contains(temp)) {
+                        f2 = true;
+                        stackForNextNodes.add(temp);
+                    }
+                    if (f1 && f2) {
+                        label++;
+                    }
+                    f1 = f2 = false;
+                }
+            }
+            //} zbog ovog je za gramatika100 bilo 107 umjesto 108
 
-            } //kraj while petlje
+            // ispraznili smo sve
+            n = stackForNextNodes.get(0); // uzimanje sa stoga, iduci cvor
+            stackForNextNodes.remove(0); // skidanje sa stoga*/
+            if (stackForNextNodes.size() == 0 && n == null) break;
 
-        }
+        } //kraj while petlje
 
+    }
 
 
     /**
      * ubaciti metoda koja ce provjeriti postoji li već takav identican cvor
      */
     /**
-     *
      * @param list desna strana stavke
      * @return lista sa zamijenjenim pozicijama elemenata
      */
     public static List<String> swapDotSymbol(List<String> list) {
         int index = list.indexOf(".");
-        Collections.swap(list, index, index+1);
+        Collections.swap(list, index, index + 1);
 
         return list;
     }
@@ -304,19 +289,19 @@ public class GSA {
     /**
      * Prijelazi u ostala stanja
      */
-    public void addNodeTransitions(){
+    public void addNodeTransitions() {
         String nextSymbol = null;
         int index; // index of dot
         for (Node n : this.nodes) {
 
             index = n.getItemRHS().indexOf(".");
             if (index == n.getItemRHS().size() - 1) {
-               nextSymbol = this.oldStart; // poseban slucaj
+                nextSymbol = this.oldStart; // poseban slucaj
             } else {
                 for (Node singleNode : this.nodes) {
                     if ((singleNode.getItemLHS().equals(n.getItemLHS()))
                             && (singleNode.getItemRHS().equals(swapDotSymbol(new ArrayList(n.getItemRHS()))))) {
-                        nextSymbol = n.getItemRHS().get(index+1);
+                        nextSymbol = n.getItemRHS().get(index + 1);
                         singleNode.setSkup(n.getSkup()); // dodano
                         n.dodajPrijelaz(nextSymbol, singleNode);
 
@@ -325,10 +310,10 @@ public class GSA {
             }
             // dodavanje eps. prijelaza samo ako je iza znaka tocke nezavrsni znak
 
-            if(this.terminals.contains(nextSymbol) || index == n.getItemRHS().size() - 1) continue;
+            if (this.terminals.contains(nextSymbol) || index == n.getItemRHS().size() - 1) continue;
 
             for (Node singleNode : this.nodes) {
-                if(singleNode.getItemLHS().equals(nextSymbol) && singleNode.getItemRHS().get(0).equals(".")) { // not to every item; the dot on index 0!
+                if (singleNode.getItemLHS().equals(nextSymbol) && singleNode.getItemRHS().get(0).equals(".")) { // not to every item; the dot on index 0!
                     n.dodajEPrijelaz(singleNode);
                 }
             }
@@ -356,23 +341,24 @@ public class GSA {
                     } else if (this.variables.contains(oneP.get(0))) { // prod. pocinje nezavrsnim
                         // provjeri cime zapocinje nezavrsni znak na koji smo naisli
 
-                        if(this.variableSetFirst.containsKey(oneP.get(0))) { // ako taj nezavrsni ima zabiljezene zavrsne kojima pocinje
+                        if (this.variableSetFirst.containsKey(oneP.get(0))) { // ako taj nezavrsni ima zabiljezene zavrsne kojima pocinje
 
-                        if(!productionListEntry.getKey().equals("q0")) toBeAdded.addAll(this.variableSetFirst.get(oneP.get(0)));
-                        else    { // iznimno za novo pocetno stanje
-                            toBeAdded.add(String.valueOf(this.stop));
-                                }
-                         }
+                            if (!productionListEntry.getKey().equals("q0"))
+                                toBeAdded.addAll(this.variableSetFirst.get(oneP.get(0)));
+                            else { // iznimno za novo pocetno stanje
+                                toBeAdded.add(String.valueOf(this.stop));
+                            }
+                        }
                     }
 
-                    if(this.variableSetFirst.containsKey(productionListEntry.getKey()) == false){ // nije bilo zapisa
-                            Set<String> temp = new HashSet<>();
-                            temp.addAll(toBeAdded);
-                            this.variableSetFirst.put(productionListEntry.getKey(), temp);
-                        } else { // prosiri skup
-                            Set<String> temp = new HashSet<>(this.variableSetFirst.get(productionListEntry.getKey()));
-                            temp.addAll(toBeAdded);
-                            this.variableSetFirst.put(productionListEntry.getKey(), temp);
+                    if (this.variableSetFirst.containsKey(productionListEntry.getKey()) == false) { // nije bilo zapisa
+                        Set<String> temp = new HashSet<>();
+                        temp.addAll(toBeAdded);
+                        this.variableSetFirst.put(productionListEntry.getKey(), temp);
+                    } else { // prosiri skup
+                        Set<String> temp = new HashSet<>(this.variableSetFirst.get(productionListEntry.getKey()));
+                        temp.addAll(toBeAdded);
+                        this.variableSetFirst.put(productionListEntry.getKey(), temp);
                     }
                 }
             }
@@ -401,32 +387,27 @@ public class GSA {
                 String[] synTerminalsArray = sb.substring(5).split("\\s+");
                 generator.synTerminals = GSA.arrayIntoSet(synTerminalsArray);
             } else {
-                System.out.print("error!");
+                System.out.print("Error!");
             }
         }
-
-       /* System.out.println(generator.variables.toString());
-        System.out.println(generator.terminals.toString());
-        System.out.println(generator.synTerminals.toString());*/
 
         generator.initializeMap();
 
         String productionLHS = new String();
         List<String> productionRHS = new ArrayList<>();
         boolean add = false;
-        while (sc.hasNext()){
+        while (sc.hasNext()) {
             String line = sc.nextLine();
             if (line.startsWith("<")) { //  pronasli lijevu stranu produkcije
                 productionLHS = line.trim();
             } else if (line.contains("$")) { // epsilon produkcija
-                generator.emptyVariables.add(productionLHS); // nije bilo
+                generator.emptyVariables.add(productionLHS); //
                 generator.countProductions++;
                 productionRHS.clear();
                 productionRHS.add("$");
                 add = true;
-            } else { // found non-epsilon production
+            } else { //
                 generator.countProductions++;
-                // dodaj završni znak u skup ZAPOČINJE za nezavršni u productionLHS?
                 String[] tempArrayRHS = line.substring(1).split("\\s+");
                 productionRHS = new ArrayList<>(Arrays.asList(tempArrayRHS));
 
@@ -436,7 +417,7 @@ public class GSA {
                 try {
                     generator.addProduction(productionLHS, new ArrayList<>(productionRHS));
                 } catch (Exception e) {
-                    System.out.println("GREŠKA");
+
                 }
             }
             add = false;
@@ -456,26 +437,35 @@ public class GSA {
         generator.addNodeTransitions();
 
         Node initialNode = null;
-        for(Node singleNode : generator.nodes){
-       //     System.out.println(singleNode);
-            singleNode.printAllTransitions();
-            if(singleNode.getOznaka() == generator.nodes.size()){
+        for (Node singleNode : generator.nodes) {
+
+            if (singleNode.getOznaka() == generator.nodes.size()) {
                 initialNode = singleNode;
             }
         }
-      //  System.out.println(generator.variableSetFirst.toString());
 
-        LAutomat a = new LAutomat(initialNode, generator.epsNodes);
+
 
         generator.findSetsForNodes();
         List<Node> poredani = new ArrayList<>(generator.epsNodes);
-
-       poredani.sort((o1, o2) -> Integer.valueOf(o1.getOznaka()).compareTo(Integer.valueOf(o2.getOznaka())));
-        for(Node n : poredani){
+        LAutomat a = null;
+        poredani.sort((o1, o2) -> Integer.valueOf(o1.getOznaka()).compareTo(Integer.valueOf(o2.getOznaka())));
+        boolean prvi = true;
+        for (Node n : poredani) {
             System.out.println(n);
+            if(prvi){
+                prvi = false;
+                a = new LAutomat(n, generator.epsNodes);
+            }
         }
 
-    //    System.out.println(generator.epsNodes.size());
+
+
+       a.pokreniAutomat();
+        System.out.println(a.getStatus());
+        a.prijelaz("<B>");
+        System.out.println(a.getStatus());
+
     }
 
 }
