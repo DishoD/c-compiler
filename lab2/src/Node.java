@@ -2,7 +2,7 @@ import java.util.*;
 import java.lang.StringBuilder;
 
 /**
- * Čvor(stanje) u e-NKA.
+ * Cvor(stanje) u e-NKA.
  */
 public class Node {
     private int oznaka;
@@ -13,6 +13,9 @@ public class Node {
 
     // ##################################################
 
+    public int getIndeksOdTockica () {
+        return this.itemRHS.indexOf(".");
+    }
     private Set<String> skup; // predstavlja Skup unutar {}, npr. S -> * A B, {b,d}
 
     public Node(int oznaka, String itemLHS, List<String> itemRHS) {
@@ -35,17 +38,17 @@ public class Node {
     /**
      * Dodaje epsilon prijelaz iz trenutnog node-a u zadani node.
      *
-     * @param node odredišni node e-prijelaza
+     * @param node odredisni node e-prijelaza
      */
     public void dodajEPrijelaz(Node node) {
         EPrijelazi.add(node);
     }
 
     /**
-     * Dodaje prijelaz iz trenutnog čvora u zadani čvor za zadani znak.
+     * Dodaje prijelaz iz trenutnog cvora u zadani cvor za zadani znak.
      *
      * @param znak znak prijelaza
-     * @param node odredišni čvor prijelaza
+     * @param node odredisni cvor prijelaza
      */
     public void dodajPrijelaz(String znak, Node node) {
         List<Node> n = prijelazi.get(znak);
@@ -59,22 +62,24 @@ public class Node {
     }
 
     /**
-     * @return Sva stanja e-prijelaza iz ovog čvora.
+     * @return Sva stanja e-prijelaza iz ovog cvora.
      */
     public List<Node> getEPrijelazi() {
         return EPrijelazi;
     }
 
     /**
-     * @param znak znak prijelaza (završni ili nezavršni znak)
+     * @param znak znak prijelaza (zavrsni ili nezavrsni znak)
      * @return Sva stanja prijelaza za zadani znak iz ovog stanja.
      */
     public List<Node> getPrijelazi(String znak) {
         return prijelazi.get(znak);
     }
 
+
+
     /**
-     * Overloadana metoda koja će vratit mapu svih prijelaza određenog čvora (bez eps.!)
+     * Overloadana metoda koja ce vratit mapu svih prijelaza odredenog cvora (bez eps.!)
      *
      * @return mapa svih prijelaza
      */
@@ -85,6 +90,7 @@ public class Node {
 
     @Override
     public boolean equals(Object o){
+        if(o == this) return true;
         if(!(o instanceof Node)) return false;
         Node n = (Node)o;
         return (this.itemRHS.equals(n.getItemRHS()) && this.itemLHS.equals(n.getItemLHS()) &&
@@ -126,7 +132,7 @@ public class Node {
 
     /**
      *
-     * @param el element koji će se dodati u skup
+     * @param el element koji ce se dodati u skup
      */
     public void addToSkup(String el){
         this.skup.add(el);
@@ -151,7 +157,7 @@ public class Node {
     }
 
     /**
-     * Ispiši sve prijelaze
+     * Ispisi sve prijelaze
      */
     public void printAllTransitions(){
 
@@ -174,4 +180,7 @@ public class Node {
 
     }
 
+    public void setOznaka(int oznaka) {
+        this.oznaka = oznaka;
+    }
 }

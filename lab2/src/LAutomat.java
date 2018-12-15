@@ -9,7 +9,7 @@ public class LAutomat {
 
     public static enum LAutomatStatus {
         /**
-         * Automat se nalazi u jednom ili više stanja trenutno, ali niti jedno nije prihvatljivo.
+         * Automat se nalazi u jednom ili vise stanja trenutno, ali niti jedno nije prihvatljivo.
          */
         RADI,
 
@@ -31,10 +31,10 @@ public class LAutomat {
     private List<Akcija> akcije = new ArrayList<>();
 
     /**
-     * Inicijalizira novi automat sa zadanim početnim i skupom prihvatljivih stanja. Automatov status je 'STOPIRAN'.
+     * Inicijalizira novi automat sa zadanim pocetnim i skupom prihvatljivih stanja. Automatov status je 'STOPIRAN'.
      * Automat se mora pokrenuti nakon inicijalizacije.
      *
-     * @param pocetnoStanje početno stanje automata
+     * @param pocetnoStanje pocetno stanje automata
      * @param prihvatljivaStanja skup prihvatljivih stanja automat
      */
     public LAutomat(Node pocetnoStanje, Set<Node> prihvatljivaStanja) {
@@ -44,10 +44,10 @@ public class LAutomat {
     }
 
     /**
-     * Pokreće automat. Trenutna stanja su e-okruženje početnog stanja.
-     * Ako je automat već bio pokrenut, resetira se opet na početno stanje + e-okruženje.
-     * Nakon poziva ove metode automat može biti u stanju RADI ili stanju PRIHVATLJIV ovisno o
-     * e-okruženju početnog stanja.
+     * Pokrece automat. Trenutna stanja su e-okruzenje pocetnog stanja.
+     * Ako je automat vec bio pokrenut, resetira se opet na pocetno stanje + e-okruzenje.
+     * Nakon poziva ove metode automat moze biti u stanju RADI ili stanju PRIHVATLJIV ovisno o
+     * e-okruzenju pocetnog stanja.
      */
     public void pokreniAutomat(){
         status = LAutomatStatus.RADI;
@@ -58,19 +58,19 @@ public class LAutomat {
     }
 
     /**
-     * Za predani znak automat vrši prijelaze u nova stanja te ih proširuje e-okruženjem.
+     * Za predani znak automat vrsi prijelaze u nova stanja te ih prosiruje e-okruzenjem.
      *
-     * @param znak za koji znak se izvršavaju prijelazi
-     * @return status automata nakon izvršenih prijelaza
+     * @param znak za koji znak se izvrsavaju prijelazi
+     * @return status automata nakon izvrsenih prijelaza
      */
     public LAutomatStatus prijelaz(String znak) {
         if(status == LAutomatStatus.STOPIRAN) return status;
         Set<Node> novaStanja = new HashSet<>();
 
         for(Node pojedinoStanje : trenutnaStanja){ // dodavanje stanja u koja idemo prijelazima automata
-          List<Node> temp = pojedinoStanje.getPrijelazi(znak);
-          if(temp == null) continue;
-          novaStanja.addAll(temp);
+            List<Node> temp = pojedinoStanje.getPrijelazi(znak);
+            if(temp == null) continue;
+            novaStanja.addAll(temp);
         }
 
         trenutnaStanja = novaStanja;
@@ -79,7 +79,7 @@ public class LAutomat {
             return LAutomatStatus.STOPIRAN;
         }
 
-        EOkruzenje();  // modificiramo trenutnaStanja, proširivanje EOkruženjem
+        EOkruzenje();  // modificiramo trenutnaStanja, prosirivanje EOkruzenjem
         return postaviStatus();
 
     }
@@ -89,7 +89,7 @@ public class LAutomat {
      * @return trenutni status automata
      */
     private LAutomatStatus postaviStatus(){
-     return LAutomatStatus.PRIHVATLJIV;
+        return LAutomatStatus.PRIHVATLJIV;
 
     }
 
@@ -106,7 +106,7 @@ public class LAutomat {
     }
 
     /**
-     * Trenutna stanja proširi stanjima epsilon prijelaza.
+     * Trenutna stanja prosiri stanjima epsilon prijelaza.
      */
     private void EOkruzenje() {
 
@@ -116,13 +116,13 @@ public class LAutomat {
         while(!stogStanja.isEmpty()){
             Node temp = stogStanja.get(stogStanja.size() - 1); // skidamo stanje s "vrha" stoga
             stogStanja.remove(stogStanja.size() - 1);
-                for(Node pojedinoStanje : temp.getEPrijelazi()){ // iteriramo kroz skup stanja u koji ide eps-prijelazima
-                    if(!obiljezenaStanja.contains(pojedinoStanje)){
-                        obiljezenaStanja.add(pojedinoStanje); // ako nije bio obilježen, postaje obilježen
-                        stogStanja.add(pojedinoStanje);
-                    }
+            for(Node pojedinoStanje : temp.getEPrijelazi()){ // iteriramo kroz skup stanja u koji ide eps-prijelazima
+                if(!obiljezenaStanja.contains(pojedinoStanje)){
+                    obiljezenaStanja.add(pojedinoStanje); // ako nije bio obiljezen, postaje obiljezen
+                    stogStanja.add(pojedinoStanje);
                 }
             }
+        }
         trenutnaStanja = obiljezenaStanja;
 
     }
