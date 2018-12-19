@@ -24,6 +24,14 @@ public abstract class NezavrsniZnak extends Node{
         System.exit(0);
     }
 
+    protected NezavrsniZnak getChildAsNezavrsniZnak(int index) {
+        return (NezavrsniZnak)getChild(index);
+    }
+
+    protected UniformniZnak getChildAsUniformniZnak(int index) {
+        return (UniformniZnak)getChild(index);
+    }
+
     public String getNaziv() {
         return naziv;
     }

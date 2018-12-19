@@ -7,7 +7,11 @@ public class ImeTipa extends NezavrsniZnak {
 
     @Override
     public void provjeri() {
+        if(provjera == null){
+            provjera = children.size() == 1 ? new V1() : new V2();
+        }
 
+        provjera.provjeri();
     }
 
     public String getTip() {

@@ -27,6 +27,7 @@ public class PrototipFunkcije {
         return parameterTypes;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

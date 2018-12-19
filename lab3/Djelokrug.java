@@ -2,15 +2,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Djelokrug extends Node {
+    public static enum Oznaka{
+        PETLJA, FUNKCIJA, BLOK, GLOBALNI_DJELOKRUG
+    }
+
     private Map<String, Varijabla> deklariraneVarijable = new HashMap<>();
     private Map<String, PrototipFunkcije> deklariraneFunkcije = new HashMap<>();
 
-    public Djelokrug(Node parent) {
+    private final Oznaka oznaka;
+    private final PrototipFunkcije pripadaFunkciji;
+
+    public Djelokrug(Node parent, Oznaka oznaka, PrototipFunkcije pripadaFunkciji) {
         super(parent);
+        this.oznaka = oznaka;
+        this.pripadaFunkciji = pripadaFunkciji;
+
+        if(oznaka == Oznaka.FUNKCIJA && pripadaFunkciji == null) {
+            throw new RuntimeException("Ako se stvara djelokrug funkcije, mora se odrediti kojoj funkciji pripada");
+        }
     }
 
     public Djelokrug getParent() {
         return (Djelokrug)parent;
+    }
+
+    public Oznaka getOznaka() {
+        return oznaka;
+    }
+
+    public PrototipFunkcije getPripadaFunkciji() {
+        return pripadaFunkciji;
     }
 
     public void dodajVarijablu(Varijabla var) {

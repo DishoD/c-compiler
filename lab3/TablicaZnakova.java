@@ -10,7 +10,7 @@ import java.util.TreeMap;
  * svi razredi imaju pristup.
  */
 public final class TablicaZnakova {
-    private static final Djelokrug GLOBALNI_DJELOKRUG = new Djelokrug(null);
+    private static final Djelokrug GLOBALNI_DJELOKRUG = new Djelokrug(null, Djelokrug.Oznaka.GLOBALNI_DJELOKRUG, null);
     private static Djelokrug trenutniDjelokrug = GLOBALNI_DJELOKRUG;
 
     private static Map<String, PrototipFunkcije> definiraneFunkcije = new HashMap<>();
@@ -19,8 +19,8 @@ public final class TablicaZnakova {
      * Stavara novi djelokrug u trenutnom djelokrugu te
      * novostvoreni djelokrug postavlja kao trenutni djelokrug.
      */
-    public static void stvoriNoviDjelokrug() {
-        Djelokrug novi = new Djelokrug(trenutniDjelokrug);
+    public static void stvoriNoviDjelokrug(Djelokrug.Oznaka oznaka, PrototipFunkcije pripadaFunkciji) {
+        Djelokrug novi = new Djelokrug(trenutniDjelokrug, oznaka, pripadaFunkciji);
         trenutniDjelokrug.addChild(novi);
         trenutniDjelokrug = novi;
     }

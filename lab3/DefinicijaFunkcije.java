@@ -6,7 +6,11 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
 
     @Override
     public void provjeri() {
+        if(provjera == null){
+            provjera = getChild(3) instanceof UniformniZnak ? new V1() : new V2();
+        }
 
+        provjera.provjeri();
     }
 
     /**
@@ -29,8 +33,9 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
             TablicaZnakova.dodajDefiniranuFunkciju(f);
 
-            TablicaZnakova.stvoriNoviDjelokrug();
+            TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.FUNKCIJA, f);
             ((NezavrsniZnak)getChild(5)).provjeri();
+            TablicaZnakova.vratiSe();
         }
     }
 
@@ -46,6 +51,26 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
 
             String ime = ((UniformniZnak)getChild(1)).getGrupiraniZnakovi();
             if(TablicaZnakova.postojiDefiniranaFunkcija(ime)) greska();
+
+            ListaParametara parametri = (ListaParametara)getChild(3);
+            parametri.provjeri();
+
+            PrototipFunkcije f = new PrototipFunkcije(ime, povratniTip.getTip(), parametri.getTipovi());
+            PrototipFunkcije postojeciTip = TablicaZnakova.getGlobalniDjelokrug().getFunkcija(ime);
+            if(postojeciTip != null && !postojeciTip.equals(f)) greska();
+
+            TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
+            TablicaZnakova.dodajDefiniranuFunkciju(f);
+
+            TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.FUNKCIJA, f);
+            Djelokrug trenutniDjelokrug = TablicaZnakova.getTrenutniDjelokrug();
+            for (int i = 0; i < parametri.getImena().size(); ++i) {
+                String idn = parametri.getImena().get(i);
+                String type = parametri.getTipovi().get(i);
+                trenutniDjelokrug.dodajVarijablu(new Varijabla(idn, type));
+            }
+            ((NezavrsniZnak)getChild(5)).provjeri();
+            TablicaZnakova.vratiSe();
         }
     }
 }
