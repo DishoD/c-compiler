@@ -1,5 +1,3 @@
-package generator_src;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,7 +17,7 @@ public class GLA {
 	public static void main(String[] args) {
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-			writer = new BufferedWriter(new FileWriter("analizator/definicije.txt", true));
+			writer = new BufferedWriter(new FileWriter("definicije.txt", true));
 					
 			procitajRegularneDefinicije(reader);
 			

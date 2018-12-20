@@ -46,7 +46,7 @@ public class Djelokrug extends Node {
         return deklariraneVarijable.containsKey(var);
     }
 
-    public boolean postojiDeklariranaFunkcija(String f) {
+    public boolean postojiFunkcija(String f) {
         return deklariraneFunkcije.containsKey(f);
     }
 
@@ -56,5 +56,21 @@ public class Djelokrug extends Node {
 
     public PrototipFunkcije getFunkcija(String f) {
         return  deklariraneFunkcije.get(f);
+    }
+
+    public Djelokrug getDjelokrugOfVariable(String idn) {
+        Djelokrug d = this;
+        while(d != null) {
+            if(d.postojiVarijabla(idn)) return d;
+        }
+        return null;
+    }
+
+    public Djelokrug getDjelokrugOfFunction(String idn) {
+        Djelokrug d = this;
+        while(d != null) {
+            if(d.postojiFunkcija(idn)) return d;
+        }
+        return null;
     }
 }

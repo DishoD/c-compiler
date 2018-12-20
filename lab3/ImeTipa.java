@@ -41,7 +41,7 @@ public class ImeTipa extends NezavrsniZnak {
             sp.provjeri();
             if(sp.getTip().equals("void")) greska();
 
-            tip = "const(" + sp.getTip() + ")";
+            tip = TipoviUtility.toConst(sp.getTip());
         }
     }
 }

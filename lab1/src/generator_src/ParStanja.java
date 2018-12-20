@@ -1,5 +1,3 @@
-package generator_src;
-
 public class ParStanja {
 
 	public int lijevoStanje;

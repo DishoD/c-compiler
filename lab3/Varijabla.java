@@ -3,10 +3,18 @@ import java.util.Objects;
 public class Varijabla {
     private String idn;
     private String type;
+    private int brElem;
+    private boolean lizraz;
 
-    public Varijabla(String idn, String type) {
+    public Varijabla(String idn, String type, int brElem) {
         this.idn = idn;
         this.type = type;
+        this.brElem = brElem;
+        lizraz = type.equals("char") || type.equals("int") ? true : false;
+    }
+
+    public int getBrElem() {
+        return brElem;
     }
 
     public String getIdn() {
@@ -15,6 +23,10 @@ public class Varijabla {
 
     public String getType() {
         return type;
+    }
+
+    public boolean isLizraz() {
+        return lizraz;
     }
 
     @Override

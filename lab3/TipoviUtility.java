@@ -7,6 +7,14 @@ public final class TipoviUtility {
         return tip.startsWith("const(");
     }
 
+    public static boolean isArray(String tip) {
+        return tip.startsWith("niz(");
+    }
+
+    public static boolean isConstArray(String tip) {
+        return tip.startsWith("niz(const(");
+    }
+
     public static String toConst(String tip) {
         return "const(" + tip + ")";
     }
