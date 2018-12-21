@@ -1,8 +1,6 @@
 public class Izraz extends  NezavrsniZnak {
     private String tip;
     private boolean lizraz;
-    private boolean isFunction;
-    private PrototipFunkcije prototipFunkcije;
 
     public Izraz(Node parent) {
         super(parent, "<izraz>");
@@ -12,21 +10,27 @@ public class Izraz extends  NezavrsniZnak {
         return tip;
     }
 
-    public boolean isFunction() {
-        return isFunction;
-    }
-
-    public PrototipFunkcije getPrototipFunkcije() {
-        return prototipFunkcije;
-    }
-
     public boolean isLizraz() {
         return lizraz;
     }
 
     @Override
     public void provjeri() {
+        if(children.size() == 1) {
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(0);
+            ip.provjeri();
 
+            tip = ip.getTip();
+            lizraz = ip.isLizraz();
+        } else {
+            Izraz iz = (Izraz)getChild(0);
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(2);
+            iz.provjeri();
+            ip.provjeri();
+
+            tip = ip.getTip();
+            lizraz = false;
+        }
     }
 
 }

@@ -6,6 +6,9 @@ public class Inicijalizator extends NezavrsniZnak {
 
     @Override
     public void provjeri() {
-        //TODO
+        if(children.size() == 1) {
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(0);
+            ip.provjeri();
+        }
     }
 }
