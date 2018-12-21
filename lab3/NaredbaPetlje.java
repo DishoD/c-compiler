@@ -10,7 +10,7 @@ public class NaredbaPetlje extends NezavrsniZnak{
             //<naredba_petlje> ::= KR_WHILE L_ZAGRADA <izraz> D_ZAGRADA <naredba>
             Izraz izraz = (Izraz)getChild(0);
             izraz.provjeri();
-            if(!TipoviUtility.castable(izraz.getTip(), "int")) greska();
+            if(!TipoviUtility.castableImplicit(izraz.getTip(), "int")) greska();
             TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.PETLJA, null);
             getChildAsNezavrsniZnak(4).provjeri();
             TablicaZnakova.vratiSe();
@@ -19,7 +19,7 @@ public class NaredbaPetlje extends NezavrsniZnak{
             getChildAsNezavrsniZnak(2).provjeri();
             IzrazNaredba in = (IzrazNaredba)getChild(3);
             in.provjeri();
-            if(!TipoviUtility.castable(in.getTip(), "int")) greska();
+            if(!TipoviUtility.castableImplicit(in.getTip(), "int")) greska();
 
             if(children.size() == 6) {
                 //<naredba_petlje> ::= KR_FOR L_ZAGRADA <izraz_naredba>1 <izraz_naredba>2 D_ZAGRADA <naredba>

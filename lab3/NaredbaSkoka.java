@@ -29,7 +29,7 @@ public class NaredbaSkoka extends NezavrsniZnak {
                 while(trenutni.getOznaka() != Djelokrug.Oznaka.FUNKCIJA) {
                     trenutni = trenutni.getParent();
                 }
-                if(!TipoviUtility.castable(izraz.getTip(), trenutni.getPripadaFunkciji().getReturnType())) {
+                if(!TipoviUtility.castableImplicit(izraz.getTip(), trenutni.getPripadaFunkciji().getReturnType())) {
                     greska();
                 }
             }

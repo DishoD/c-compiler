@@ -77,7 +77,7 @@ public class PostfiksIzraz extends NezavrsniZnak {
             if(pi.getTip() == null || !TipoviUtility.isArray(pi.getTip())) greska();
             Izraz izraz = (Izraz) getChild(2);
             izraz.provjeri();
-            if(!TipoviUtility.castable(izraz.getTip(), "int")) greska();
+            if(!TipoviUtility.castableImplicit(izraz.getTip(), "int")) greska();
 
             String X = pi.getTip().substring(4, pi.getTip().length()-1);
 
@@ -125,7 +125,7 @@ public class PostfiksIzraz extends NezavrsniZnak {
             for(int i = 0; i < f.getPareterTypes().size(); ++i) {
                 String arg = la.getTipovi().get(i);
                 String param = f.getPareterTypes().get(i);
-                if(!TipoviUtility.castable(arg, param)) greska();
+                if(!TipoviUtility.castableImplicit(arg, param)) greska();
             }
 
             tip = pi.getTip();
@@ -144,7 +144,7 @@ public class PostfiksIzraz extends NezavrsniZnak {
         public void provjeri() {
             PostfiksIzraz pi = (PostfiksIzraz)getChild(0);
             pi.provjeri();
-            if(!pi.isLizraz() || !TipoviUtility.castable(pi.getTip(), "int")) greska();
+            if(!pi.isLizraz() || !TipoviUtility.castableImplicit(pi.getTip(), "int")) greska();
 
             tip = pi.getTip();
         }
