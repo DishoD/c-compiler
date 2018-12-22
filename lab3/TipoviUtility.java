@@ -17,7 +17,7 @@ public final class TipoviUtility {
      */
     private boolean castableImplicit (String type1, String type2) {
 
-        if (castMap.contains(type1))
+        if (castMap.containsKey(type1))
             if (castMap.get(type1).contains(type2))
                 return true;
 
