@@ -37,8 +37,6 @@ public class SemantickiAnalizator {
 
     private static NezavrsniZnak parseInput(BufferedReader input) throws IOException {
         Map<Integer, NezavrsniZnak> zadnji = new HashMap<>();
-        zadnji.put(0, new PrijevodnaJedinica(null));
-        input.readLine(); //izbaci prvu liniju koja uvijek mora biti: <prijevodna_jedinica>
 
         String line;
         while ((line = input.readLine()) != null) {
