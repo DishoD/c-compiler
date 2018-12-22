@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Djelokrug extends Node {
@@ -20,6 +22,23 @@ public class Djelokrug extends Node {
         if(oznaka == Oznaka.FUNKCIJA && pripadaFunkciji == null) {
             throw new RuntimeException("Ako se stvara djelokrug funkcije, mora se odrediti kojoj funkciji pripada");
         }
+    }
+
+    public Map<String, PrototipFunkcije> getDeklariraneFunkcije() {
+        return deklariraneFunkcije;
+    }
+
+    public Map<String, Varijabla> getDeklariraneVarijable() {
+        return deklariraneVarijable;
+    }
+
+    public List<Djelokrug> getChildren() {
+        List<Djelokrug> res = new ArrayList<>();
+        for(Node child : children) {
+            res.add((Djelokrug)child);
+        }
+
+        return res;
     }
 
     public Djelokrug getParent() {

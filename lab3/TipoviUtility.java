@@ -15,6 +15,25 @@ public final class TipoviUtility {
         return tip.startsWith("niz(const(");
     }
 
+    public  static boolean isT(String tip) {
+        return  tip.equals("int") || tip.equals("char");
+    }
+
+    public  static boolean isConstT(String tip) {
+        return  tip.equals("const(int)") || tip.equals("const(char)");
+    }
+
+    public static String getT(String tip) {
+        if(tip.startsWith("niz(")) {
+            tip = tip.substring(4, tip.length() - 1);
+        }
+        if(tip.startsWith("const(")) {
+            tip = tip.substring(6, tip.length() - 1);
+        }
+
+        return  tip;
+    }
+
     public static String toConst(String tip) {
         return "const(" + tip + ")";
     }
@@ -22,6 +41,8 @@ public final class TipoviUtility {
     public static String toArray(String tip) {
         return "niz(" + tip + ")";
     }
+
+
 
     /**
      * Provjerava moze li se tip1 implicitno castati u tip2.

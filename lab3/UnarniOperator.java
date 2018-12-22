@@ -6,7 +6,6 @@ public class UnarniOperator extends NezavrsniZnak {
 
     @Override
     public void provjeri() {
-        //TODO
         //nema semanticne provjere
     }
 }

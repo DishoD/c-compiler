@@ -53,7 +53,17 @@ public class InitDeklarator extends NezavrsniZnak {
 
             Inicijalizator init = (Inicijalizator)getChild(2);
             init.provjeri();
-            //TODO
+            if(TipoviUtility.isT(id.getTip()) || TipoviUtility.isConstT(id.getTip())) {
+                if(!TipoviUtility.castableImplicit(init.getTip(), TipoviUtility.getT(id.getTip()))) greska();
+            } else if(TipoviUtility.isConstArray(id.getTip()) || TipoviUtility.isArray(id.getTip())) {
+                if(init.getBrElem() > id.getBrElem()) greska();
+                String T = TipoviUtility.getT(id.getTip());
+                for(String U : init.getTipovi()) {
+                    if(!TipoviUtility.castableImplicit(U, T)) greska();
+                }
+            } else {
+                greska();
+            }
         }
     }
 }
