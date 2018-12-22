@@ -57,12 +57,49 @@ public class SemantickiAnalizator {
         return zadnji.get(0);
     }
 
+
+
+
     private static NezavrsniZnak produceNezavrsniZnak(String naziv, NezavrsniZnak parent) {
-        if     (naziv.equals("<prijevodna_jedinica>")) return new PrijevodnaJedinica(parent);
-        else if(naziv.equals("<aditivni_izraz>")) return new AditivniIzraz(parent);
-        else if(naziv.equals("<bin_i_izraz>")) return new BinIIzraz(parent);
-        else if(naziv.equals("<cast_izraz>")) return new CastIzraz(parent);
-        //TODO
+
+        if     (naziv.equals("<primarni_izraz>"))             return new PrimarniIzraz(parent);
+        else if(naziv.equals("<postfiks_izraz>"))             return new PostfiksIzraz(parent);
+        else if(naziv.equals("<lista_argumenata>"))           return new ListaArgumenata(parent);
+        else if(naziv.equals("<unarni_izraz>"))               return new UnarniIzraz(parent);
+        else if(naziv.equals("<unarni_operator>"))            return new UnarniOperator(parent);
+        else if(naziv.equals("<cast_izraz>"))                 return new CastIzraz(parent);
+        else if(naziv.equals("<ime_tipa>"))                   return new ImeTipa(parent);
+        else if(naziv.equals("<specifikator_tipa>"))          return new SpecifikatorTipa(parent);
+        else if(naziv.equals("<multiplikativi_izraz>"))       return new MultiplikativniIzraz(parent);
+        else if(naziv.equals("<aditivni_izraz>"))             return new AditivniIzraz(parent);
+        else if(naziv.equals("<odnosni_izraz>"))              return new OdnosniIzraz(parent);
+        else if(naziv.equals("<jednakosni_izraz>"))           return new JednakosniIzraz(parent);
+        else if(naziv.equals("<bin_i_izraz>"))                return new BinIIzraz(parent);
+        else if(naziv.equals("<bin_xili_izraz>"))             return new BinXIliIzraz(parent);
+        else if(naziv.equals("<bin_ili_izraz>"))              return new BinIliIzraz(parent);
+        else if(naziv.equals("<log_i_izraz>"))                return new LogIIzraz(parent);
+        else if(naziv.equals("<log_ili_izraz>"))              return new LogIliIzraz(parent);
+        else if(naziv.equals("<izraz_pridruzivanja>"))        return new IzrazPridruzivanja(parent);
+        else if(naziv.equals("<izraz>"))                      return new Izraz(parent);
+        else if(naziv.equals("<slozena_naredba>"))            return new SlozenaNaredba(parent);
+        else if(naziv.equals("<lista_naredbi>"))              return new ListaNaredbi(parent);
+        else if(naziv.equals("<naredba>"))                    return new Naredba(parent);
+        else if(naziv.equals("<izraz_naredba>"))              return new IzrazNaredba(parent);
+        else if(naziv.equals("<naredba_grananja>"))           return new NaredbaGrananja(parent);
+        else if(naziv.equals("<naredba_petlje>"))             return new NaredbaPetlje(parent);
+        else if(naziv.equals("<naredba_skoka>"))              return new NaredbaSkoka(parent);
+        else if(naziv.equals("<prijevodna_jedinica>"))        return new PrijevodnaJedinica(parent);
+        else if(naziv.equals("<vanjska_deklaracija>"))        return new VanjskaDeklaracija(parent);
+        else if(naziv.equals("<definicija_funkcije>"))        return new DefinicijaFunkcije(parent);
+        else if(naziv.equals("<lista_parametara>"))           return new ListaParametara(parent);
+        else if(naziv.equals("<deklaracija_parametara>"))     return new DeklaracijaParametara(parent);
+        else if(naziv.equals("<lista_deklaracija>"))          return new ListaDeklaracija(parent);
+        else if(naziv.equals("<deklaracija>"))                return new Deklaracija(parent);
+        else if(naziv.equals("<lista_init_deklaratora>"))     return new ListaInitDeklaratora(parent);
+        else if(naziv.equals("<init_deklarator>"))            return new InitDeklarator(parent);
+        else if(naziv.equals("<izravni_deklarator>"))         return new IzravniDeklarator(parent);
+        else if(naziv.equals("<inicijalizator>"))             return new Inicijalizator(parent);
+        else if(naziv.equals("<lista_izraza_pridruzivanja>")) return new ListaIzrazaPridruzivanja(parent);
 
         throw new RuntimeException("Ne mogu producirati razred naziva: " + naziv);
     }
