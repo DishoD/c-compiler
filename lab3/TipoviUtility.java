@@ -5,7 +5,7 @@ import java.util.*;
  * Sadrzi pomocne funkcije vezane za tipove, pretvorbu, provjere, itd.
  */
 public final class TipoviUtility {
-    static private Map<String, List<String>> castMap = new HashMap<String, List<String>>();
+    private static Map<String, List<String>> castMap = new HashMap<String, List<String>>();
 
     static {
         createCastMap (getStartingMap());
@@ -15,7 +15,7 @@ public final class TipoviUtility {
     /**
      * Provjerava moze li se tip1 implicitno castati u tip2.
      */
-    static private boolean castableImplicit (String type1, String type2) {
+    public static boolean castableImplicit (String type1, String type2) {
 
         if (castMap.containsKey(type1))
             if (castMap.get(type1).contains(type2))
@@ -28,7 +28,7 @@ public final class TipoviUtility {
      * Iz pocetnih castova koje smo zadali u startingMap trazi castove
      * koji iz njih proizlaze te iz njih stvara castMap.
      */
-    static private void createCastMap (Map<String, List<String>> startingMap) {
+    private static void createCastMap (Map<String, List<String>> startingMap) {
         List<String> castableTo = new ArrayList<>();
         Deque<String> dequeue = new LinkedList<>();
 
@@ -57,7 +57,7 @@ public final class TipoviUtility {
     /**
      * Metoda u kojoj zadajemo pocetne castove.
      */
-    static private Map<String, List<String>> getStartingMap () {
+    private static Map<String, List<String>> getStartingMap () {
         Map<String, List<String>> startingMap = new HashMap<>();
         List<String> listToAdd = new ArrayList<>();
 
