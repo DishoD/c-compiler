@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Djelokrug extends Node {
-    public static enum Oznaka{
+    public enum Oznaka{
         PETLJA, FUNKCIJA, BLOK, GLOBALNI_DJELOKRUG
     }
 
@@ -81,15 +81,17 @@ public class Djelokrug extends Node {
         Djelokrug d = this;
         while(d != null) {
             if(d.postojiVarijabla(idn)) return d;
+            d = d.getParent();
         }
-        return null;
+        return d;
     }
 
     public Djelokrug getDjelokrugOfFunction(String idn) {
         Djelokrug d = this;
         while(d != null) {
             if(d.postojiFunkcija(idn)) return d;
+            d = d.getParent();
         }
-        return null;
+        return d;
     }
 }

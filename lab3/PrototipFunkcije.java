@@ -7,7 +7,7 @@ public class PrototipFunkcije {
 
     private String idn;
     private String returnType;
-    private List<String> parameterTypes = new ArrayList<>();
+    private List<String> parameterTypes;
 
     public PrototipFunkcije(String idn, String returnType, List<String> pareterTypes) {
         this.idn = idn;

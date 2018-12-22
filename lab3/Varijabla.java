@@ -10,7 +10,7 @@ public class Varijabla {
         this.idn = idn;
         this.type = type;
         this.brElem = brElem;
-        lizraz = type.equals("char") || type.equals("int") ? true : false;
+        lizraz = type.equals("char") || type.equals("int");
     }
 
     public int getBrElem() {

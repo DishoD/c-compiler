@@ -43,7 +43,7 @@ public class PrimarniIzraz extends NezavrsniZnak {
              char c = str.charAt(i);
              if(c == '\\') {
                  if(i+1 >= str.length()) return false;
-                 if(!DOZVOLJENI_CHAROVI.contains(c + str.charAt(i+1))) return false;
+                 if(!DOZVOLJENI_CHAROVI.contains(String.format("%c%c", c, str.charAt(i+1)))) return false;
              }
          }
          return true;
