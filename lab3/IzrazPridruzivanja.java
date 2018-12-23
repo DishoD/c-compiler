@@ -17,12 +17,14 @@ public class IzrazPridruzivanja extends NezavrsniZnak {
     @Override
     public void provjeri() {
         if(children.size() == 1) {
+            //< izraz_pridruzivanja> ::= <log_ili_izraz>
             LogIliIzraz liz = (LogIliIzraz)getChild(0);
             liz.provjeri();
 
             tip = liz.getTip();
             lizraz = liz.isLizraz();
         } else {
+            // <izraz_pridruzivanja> ::= <postfiks_izraz> OP_PRIDRUZI <izraz_pridruzivanja>
             PostfiksIzraz pi = (PostfiksIzraz)getChild(0);
             IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(2);
             pi.provjeri();

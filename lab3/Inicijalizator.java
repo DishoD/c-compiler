@@ -36,8 +36,15 @@ public class Inicijalizator extends NezavrsniZnak {
 
             NezavrsniZnak primarniIzraz = ip.getChildAsNezavrsniZnak(0);
             while(!(primarniIzraz instanceof PrimarniIzraz)) {
+                if(primarniIzraz instanceof CastIzraz && primarniIzraz.children.size() == 4) {
+                    primarniIzraz = primarniIzraz.getChildAsNezavrsniZnak(3);
+                    continue;
+                }
+                if(primarniIzraz instanceof UnarniIzraz && primarniIzraz.children.size() > 1) {
+                    primarniIzraz = primarniIzraz.getChildAsNezavrsniZnak(1);
+                    continue;
+                }
                 primarniIzraz = primarniIzraz.getChildAsNezavrsniZnak(0);
-                //TODO pr 964, 732, 695
             }
             UniformniZnak uz = primarniIzraz.getChildAsUniformniZnak(0);
             if(uz.getToken().equals("NIZ_ZNAKOVA")) {
@@ -63,7 +70,7 @@ public class Inicijalizator extends NezavrsniZnak {
             lip.provjeri();
 
             brElem = lip.getBrElem();
-            tipovi = getTipovi();
+            tipovi = lip.getTipovi();
         }
     }
 }

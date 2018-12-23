@@ -41,13 +41,13 @@ public class PrimarniIzraz extends NezavrsniZnak {
          str = str.substring(1, str.length()-1);
          for(int i = 0; i < str.length(); ++i) {
              char c = str.charAt(i);
+             if(c == '"') return false;
              if(c == '\\') {
                  if(i+1 >= str.length()) return false;
                  if(!DOZVOLJENI_CHAROVI.contains(String.format("%c%c", c, str.charAt(i+1)))) return false;
                  i++;
              }
          }
-         //TODO :ispravi za slicajeve \\"
          return true;
     }
 
@@ -58,26 +58,31 @@ public class PrimarniIzraz extends NezavrsniZnak {
 
             switch (znak.getToken()){
                 case "IDN":
-                    //TODO pararelno se mora provjeravati postoji li i funkcija i varijabla
-                    Djelokrug d = TablicaZnakova.getTrenutniDjelokrug().getDjelokrugOfVariable(znak.getGrupiraniZnakovi());
-                    if(d == null) {
-                        //ako je idn funkcija
-                        isFunction = true;
-                        d = TablicaZnakova.getTrenutniDjelokrug().getDjelokrugOfFunction(znak.getGrupiraniZnakovi());
+                    Djelokrug d = TablicaZnakova.getTrenutniDjelokrug();
+                    String ime = znak.getGrupiraniZnakovi();
+                    while(true) {
                         if(d == null) greska();
-                        prototipFunkcije = d.getFunkcija(znak.getGrupiraniZnakovi());
-                        tip = prototipFunkcije.getReturnType();
-                    } else {
-                        //ako je idn varijabla
-                        Varijabla var = d.getVarijabla(znak.getGrupiraniZnakovi());
-                        tip = var.getType();
-                        lizraz = var.isLizraz();
+                        if(d.postojiVarijabla(ime)) {
+                            tip = d.getVarijabla(ime).getType();
+                            lizraz = tip.equals("int") || tip.equals("char");
+                            break;
+                        } else if(d.postojiFunkcija(ime)) {
+                            prototipFunkcije = d.getFunkcija(ime);
+                            tip = prototipFunkcije.getReturnType();
+                            isFunction = true;
+                            break;
+                        }
+                        d = d.getParent();
                     }
                     break;
-
                 case "BROJ":
+                    String broj = znak.getGrupiraniZnakovi();
                     try{
-                        Integer.parseInt(znak.getGrupiraniZnakovi());
+                        if(broj.startsWith("0x") || broj.startsWith("0X")) {
+                            Integer.parseInt(broj.substring(2), 16);
+                        } else {
+                            Integer.parseInt(broj);
+                        }
                     } catch (NumberFormatException e) {
                         greska();
                     }
@@ -89,6 +94,7 @@ public class PrimarniIzraz extends NezavrsniZnak {
                     String c = znak.getGrupiraniZnakovi();
                     c = c.substring(1, c.length()-1);
                     if(c.length() > 1 && !DOZVOLJENI_CHAROVI.contains(c)) greska();
+                    if(c.equals("\\")) greska();
                     tip = "char";
                     lizraz = false;
                     break;
