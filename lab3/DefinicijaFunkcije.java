@@ -29,6 +29,7 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             PrototipFunkcije f = new PrototipFunkcije(ime, povratniTip.getTip(), PrototipFunkcije.VOID_PARAMETER);
             PrototipFunkcije postojeciTip = TablicaZnakova.getGlobalniDjelokrug().getFunkcija(ime);
             if(postojeciTip != null && !postojeciTip.equals(f)) greska();
+            if(TablicaZnakova.getGlobalniDjelokrug().postojiVarijabla(ime)) greska();
 
             TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
             TablicaZnakova.dodajDefiniranuFunkciju(f);
@@ -58,6 +59,7 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             PrototipFunkcije f = new PrototipFunkcije(ime, povratniTip.getTip(), parametri.getTipovi());
             PrototipFunkcije postojeciTip = TablicaZnakova.getGlobalniDjelokrug().getFunkcija(ime);
             if(postojeciTip != null && !postojeciTip.equals(f)) greska();
+            if(TablicaZnakova.getGlobalniDjelokrug().postojiVarijabla(ime)) greska();
 
             TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
             TablicaZnakova.dodajDefiniranuFunkciju(f);
@@ -67,7 +69,7 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             for (int i = 0; i < parametri.getImena().size(); ++i) {
                 String idn = parametri.getImena().get(i);
                 String type = parametri.getTipovi().get(i);
-                trenutniDjelokrug.dodajVarijablu(new Varijabla(idn, type));
+                trenutniDjelokrug.dodajVarijablu(new Varijabla(idn, type, -1));
             }
             ((NezavrsniZnak)getChild(5)).provjeri();
             TablicaZnakova.vratiSe();

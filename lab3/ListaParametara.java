@@ -49,7 +49,7 @@ public class ListaParametara extends NezavrsniZnak {
         @Override
         public void provjeri() {
             ListaParametara lp = (ListaParametara)getChild(0);
-            DeklaracijaParametra dp = (DeklaracijaParametra)getChild(1);
+            DeklaracijaParametra dp = (DeklaracijaParametra)getChild(2);
 
             lp.provjeri();
             dp.provjeri();

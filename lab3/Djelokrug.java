@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Djelokrug extends Node {
     public enum Oznaka{
@@ -16,6 +13,7 @@ public class Djelokrug extends Node {
 
     public Djelokrug(Node parent, Oznaka oznaka, PrototipFunkcije pripadaFunkciji) {
         super(parent);
+        Objects.nonNull(oznaka);
         this.oznaka = oznaka;
         this.pripadaFunkciji = pripadaFunkciji;
 

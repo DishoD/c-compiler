@@ -1,7 +1,8 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListaArgumenata extends NezavrsniZnak {
-    private List<String> tipovi;
+    private List<String> tipovi = new ArrayList<>();
 
     public ListaArgumenata(Node parent) {
         super(parent, "<lista_argumenata>");

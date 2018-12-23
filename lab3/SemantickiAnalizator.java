@@ -16,8 +16,8 @@ public class SemantickiAnalizator {
         PrototipFunkcije fMain = globalni.getFunkcija("main");
         PrototipFunkcije fTrazena = new PrototipFunkcije("main", "int", PrototipFunkcije.VOID_PARAMETER);
         if(fMain == null || !fMain.equals(fTrazena)) {
-            System.out.println("main");
-            return;
+            System.out.print("main" + '\n');
+            System.exit(0);
         }
 
         Queue<Djelokrug> red = new ArrayDeque<>();
@@ -27,9 +27,10 @@ public class SemantickiAnalizator {
             red.addAll(trenutni.getChildren());
 
             for(Map.Entry<String, PrototipFunkcije> e : trenutni.getDeklariraneFunkcije().entrySet()) {
-                if(!TablicaZnakova.postojiDefiniranaFunkcija(e.getKey())) {
-                    System.out.println("funkcija");
-                    return;
+                PrototipFunkcije f = TablicaZnakova.getDefiniranaFunkcija(e.getKey());
+                if(f == null || !f.equals(e.getValue())) {
+                    System.out.print("funkcija" + '\n');
+                    System.exit(0);
                 }
             }
         }
@@ -49,8 +50,13 @@ public class SemantickiAnalizator {
                 if(parent != null) parent.addChild(child);
                 zadnji.put(prefix, child);
             } else {
-                String[] comps = znak.split("\\s");
-                UniformniZnak uz = new UniformniZnak(parent, comps[0], Integer.parseInt(comps[1]), comps[2]);
+                String token = znak.substring(0, znak.indexOf(' '));
+                String ostatak = znak.substring(znak.indexOf(' ') + 1);
+                String red = ostatak.substring(0, ostatak.indexOf(' '));
+                ostatak = ostatak.substring(ostatak.indexOf(' ') + 1);
+                String grupirani = ostatak.trim();
+                UniformniZnak uz = new UniformniZnak(parent, token, Integer.parseInt(red), grupirani);
+                parent.addChild(uz);
             }
         }
 
@@ -69,7 +75,7 @@ public class SemantickiAnalizator {
         else if(naziv.equals("<cast_izraz>"))                 return new CastIzraz(parent);
         else if(naziv.equals("<ime_tipa>"))                   return new ImeTipa(parent);
         else if(naziv.equals("<specifikator_tipa>"))          return new SpecifikatorTipa(parent);
-        else if(naziv.equals("<multiplikativi_izraz>"))       return new MultiplikativniIzraz(parent);
+        else if(naziv.equals("<multiplikativni_izraz>"))      return new MultiplikativniIzraz(parent);
         else if(naziv.equals("<aditivni_izraz>"))             return new AditivniIzraz(parent);
         else if(naziv.equals("<odnosni_izraz>"))              return new OdnosniIzraz(parent);
         else if(naziv.equals("<jednakosni_izraz>"))           return new JednakosniIzraz(parent);
@@ -91,7 +97,7 @@ public class SemantickiAnalizator {
         else if(naziv.equals("<vanjska_deklaracija>"))        return new VanjskaDeklaracija(parent);
         else if(naziv.equals("<definicija_funkcije>"))        return new DefinicijaFunkcije(parent);
         else if(naziv.equals("<lista_parametara>"))           return new ListaParametara(parent);
-        else if(naziv.equals("<deklaracija_parametara>"))     return new DeklaracijaParametra(parent);
+        else if(naziv.equals("<deklaracija_parametra>"))      return new DeklaracijaParametra(parent);
         else if(naziv.equals("<lista_deklaracija>"))          return new ListaDeklaracija(parent);
         else if(naziv.equals("<deklaracija>"))                return new Deklaracija(parent);
         else if(naziv.equals("<lista_init_deklaratora>"))     return new ListaInitDeklaratora(parent);

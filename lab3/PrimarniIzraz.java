@@ -44,8 +44,10 @@ public class PrimarniIzraz extends NezavrsniZnak {
              if(c == '\\') {
                  if(i+1 >= str.length()) return false;
                  if(!DOZVOLJENI_CHAROVI.contains(String.format("%c%c", c, str.charAt(i+1)))) return false;
+                 i++;
              }
          }
+         //TODO :ispravi za slicajeve \\"
          return true;
     }
 
@@ -56,6 +58,7 @@ public class PrimarniIzraz extends NezavrsniZnak {
 
             switch (znak.getToken()){
                 case "IDN":
+                    //TODO pararelno se mora provjeravati postoji li i funkcija i varijabla
                     Djelokrug d = TablicaZnakova.getTrenutniDjelokrug().getDjelokrugOfVariable(znak.getGrupiraniZnakovi());
                     if(d == null) {
                         //ako je idn funkcija

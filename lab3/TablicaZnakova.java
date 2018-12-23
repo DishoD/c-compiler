@@ -43,6 +43,8 @@ public final class TablicaZnakova {
         return definiraneFunkcije.containsKey(f);
     }
 
+    public static PrototipFunkcije getDefiniranaFunkcija(String f) {return  definiraneFunkcije.get(f);}
+
     public static void dodajDefiniranuFunkciju(PrototipFunkcije f) {
         definiraneFunkcije.put(f.getIdn(), f);
     }

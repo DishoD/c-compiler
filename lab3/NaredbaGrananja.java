@@ -7,7 +7,7 @@ public class NaredbaGrananja extends NezavrsniZnak {
     @Override
     public void provjeri() {
         //<naredba_grananja> ::= KR_IF L_ZAGRADA <izraz> D_ZAGRADA <naredba>
-        Izraz izraz = (Izraz)getChild(0);
+        Izraz izraz = (Izraz)getChild(2);
         izraz.provjeri();
         if(!TipoviUtility.castableImplicit(izraz.getTip(), "int")) greska();
         TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.BLOK, null);

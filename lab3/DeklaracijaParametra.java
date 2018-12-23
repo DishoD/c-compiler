@@ -30,6 +30,7 @@ public class DeklaracijaParametra extends NezavrsniZnak {
         @Override
         public void provjeri() {
             ImeTipa imeTipa = (ImeTipa)getChild(0);
+            imeTipa.provjeri();
             if(imeTipa.getTip().equals("void")) greska();
 
             tip = imeTipa.getTip();
@@ -44,6 +45,7 @@ public class DeklaracijaParametra extends NezavrsniZnak {
         @Override
         public void provjeri() {
             ImeTipa imeTipa = (ImeTipa)getChild(0);
+            imeTipa.provjeri();
             if(imeTipa.getTip().equals("void")) greska();
 
             tip = TipoviUtility.toArray(imeTipa.getTip());

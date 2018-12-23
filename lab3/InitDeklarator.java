@@ -56,6 +56,7 @@ public class InitDeklarator extends NezavrsniZnak {
             if(TipoviUtility.isT(id.getTip()) || TipoviUtility.isConstT(id.getTip())) {
                 if(!TipoviUtility.castableImplicit(init.getTip(), TipoviUtility.getT(id.getTip()))) greska();
             } else if(TipoviUtility.isConstArray(id.getTip()) || TipoviUtility.isArray(id.getTip())) {
+                if(init.getBrElem() <= 0) greska();
                 if(init.getBrElem() > id.getBrElem()) greska();
                 String T = TipoviUtility.getT(id.getTip());
                 for(String U : init.getTipovi()) {

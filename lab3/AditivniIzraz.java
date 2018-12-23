@@ -17,12 +17,14 @@ public class AditivniIzraz extends NezavrsniZnak {
     @Override
     public void provjeri() {
         if(children.size() == 1) {
+            // <aditivni_izraz> ::= <multiplikativni_izraz>
             MultiplikativniIzraz mi = (MultiplikativniIzraz)getChild(0);
             mi.provjeri();
 
             tip = mi.getTip();
             lizraz = mi.isLizraz();
         } else {
+            // <aditivni_izraz> ::= <aditivni_izraz> (PLUS | MINUS) <multiplikativni_izraz>
             AditivniIzraz ai = (AditivniIzraz)getChild(0);
             MultiplikativniIzraz mi = (MultiplikativniIzraz)getChild(2);
             ai.provjeri();

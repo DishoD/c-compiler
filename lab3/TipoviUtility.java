@@ -16,6 +16,7 @@ public final class TipoviUtility {
      * Provjerava moze li se tip1 implicitno castati u tip2.
      */
     public static boolean castableImplicit (String type1, String type2) {
+        if(type1.equals(type2)) return true;
 
         if (castMap.containsKey(type1))
             if (castMap.get(type1).contains(type2))

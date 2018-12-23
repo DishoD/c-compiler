@@ -6,6 +6,13 @@ public class Naredba extends NezavrsniZnak {
 
     @Override
     public void provjeri() {
-        getChildAsNezavrsniZnak(0).provjeri();
+        NezavrsniZnak znak = getChildAsNezavrsniZnak(0);
+        if(znak instanceof SlozenaNaredba) {
+            TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.BLOK, null);
+            znak.provjeri();
+            TablicaZnakova.vratiSe();
+        } else {
+            znak.provjeri();
+        }
     }
 }

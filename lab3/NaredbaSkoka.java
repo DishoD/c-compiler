@@ -11,10 +11,10 @@ public class NaredbaSkoka extends NezavrsniZnak {
 
         if(kr.getToken().equals("KR_CONTINUE") || kr.getToken().equals("KR_BREAK")) {
             //<naredba_skoka> ::= (KR_CONTINUE | KR_BREAK) TOCKAZAREZ
-            while(trenutni != null || trenutni.getOznaka() != Djelokrug.Oznaka.PETLJA) {
+            while(trenutni.getOznaka() != Djelokrug.Oznaka.PETLJA) {
                 trenutni = trenutni.getParent();
+                if(trenutni == null) greska();
             }
-            if(trenutni == null) greska();
         } else {
             if(children.size() == 2) {
                 //<naredba_skoka> ::= KR_RETURN TOCKAZAREZ

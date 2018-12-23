@@ -8,7 +8,7 @@ public class NaredbaPetlje extends NezavrsniZnak{
     public void provjeri() {
         if(children.size() == 5) {
             //<naredba_petlje> ::= KR_WHILE L_ZAGRADA <izraz> D_ZAGRADA <naredba>
-            Izraz izraz = (Izraz)getChild(0);
+            Izraz izraz = (Izraz)getChild(2);
             izraz.provjeri();
             if(!TipoviUtility.castableImplicit(izraz.getTip(), "int")) greska();
             TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.PETLJA, null);

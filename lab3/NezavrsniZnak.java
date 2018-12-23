@@ -15,12 +15,13 @@ public abstract class NezavrsniZnak extends Node{
 
     public void greska() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this).append(" ::= ");
+        sb.append(this).append(" ::=");
 
         for(Node child : children)
-            sb.append(child).append(" ");
+            sb.append(" ").append(child);
 
-        System.out.println(sb.toString());
+        sb.append('\n');
+        System.out.print(sb.toString());
         System.exit(0);
     }
 
@@ -31,6 +32,7 @@ public abstract class NezavrsniZnak extends Node{
     protected UniformniZnak getChildAsUniformniZnak(int index) {
         return (UniformniZnak)getChild(index);
     }
+
 
     public String getNaziv() {
         return naziv;

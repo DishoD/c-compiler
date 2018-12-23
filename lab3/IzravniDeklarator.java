@@ -59,7 +59,8 @@ public class IzravniDeklarator extends NezavrsniZnak {
         public void provjeri() {
             if(ntip.equals("void")) greska();
             String idn = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
-            if(TablicaZnakova.getTrenutniDjelokrug().postojiVarijabla(idn)) greska();
+            Djelokrug d = TablicaZnakova.getTrenutniDjelokrug();
+            if(d.postojiVarijabla(idn) || d.postojiFunkcija(idn)) greska();
             TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(new Varijabla(idn, ntip, -1));
             tip = ntip;
         }
@@ -74,12 +75,18 @@ public class IzravniDeklarator extends NezavrsniZnak {
         public void provjeri() {
             if(ntip.equals("void")) greska();
             String idn = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
-            if(TablicaZnakova.getTrenutniDjelokrug().postojiVarijabla(idn)) greska();
-            int vr = Integer.parseInt(getChildAsUniformniZnak(2).getGrupiraniZnakovi());
+            Djelokrug d = TablicaZnakova.getTrenutniDjelokrug();
+            if(d.postojiVarijabla(idn) || d.postojiFunkcija(idn)) greska();
+            int vr = -1;
+            try{
+                vr = Integer.parseInt(getChildAsUniformniZnak(2).getGrupiraniZnakovi());
+            } catch (NumberFormatException e) {
+                greska();
+            }
             if(vr <= 0 || vr > 1024) greska();
-            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(new Varijabla(idn, ntip, vr));
+            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(new Varijabla(idn, TipoviUtility.toArray(ntip), vr));
 
-            tip = ntip;
+            tip = TipoviUtility.toArray(ntip);
             brElem = vr;
         }
     }
@@ -95,6 +102,7 @@ public class IzravniDeklarator extends NezavrsniZnak {
             PrototipFunkcije f = new PrototipFunkcije(idn, ntip, PrototipFunkcije.VOID_PARAMETER);
             PrototipFunkcije fTrazena = TablicaZnakova.getTrenutniDjelokrug().getFunkcija(idn);
             if(fTrazena != null && !f.equals(fTrazena)) greska();
+            if(TablicaZnakova.getTrenutniDjelokrug().postojiVarijabla(idn)) greska();
 
             TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
             isFunction = true;
@@ -116,6 +124,7 @@ public class IzravniDeklarator extends NezavrsniZnak {
             PrototipFunkcije f = new PrototipFunkcije(idn, ntip, parametri.getTipovi());
             PrototipFunkcije fTrazena = TablicaZnakova.getTrenutniDjelokrug().getFunkcija(idn);
             if(fTrazena != null && !f.equals(fTrazena)) greska();
+            if(TablicaZnakova.getTrenutniDjelokrug().postojiVarijabla(idn)) greska();
 
             TablicaZnakova.getTrenutniDjelokrug().dodajDeklaracijuFunkcije(f);
             isFunction = true;

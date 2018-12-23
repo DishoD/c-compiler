@@ -81,10 +81,8 @@ public class PostfiksIzraz extends NezavrsniZnak {
 
             String X = pi.getTip().substring(4, pi.getTip().length()-1);
 
-            tip = pi.getTip();
-            isFunction = pi.isFunction();
+            tip = TipoviUtility.getT(pi.getTip());
             lizraz = !TipoviUtility.isConst(X);
-            prototipFunkcije = pi.getPrototipFunkcije();
         }
     }
 
@@ -96,6 +94,7 @@ public class PostfiksIzraz extends NezavrsniZnak {
         @Override
         public void provjeri() {
             PostfiksIzraz pi = (PostfiksIzraz)getChild(0);
+            pi.provjeri();
             if(!pi.isFunction()) greska();
             PrototipFunkcije f = pi.getPrototipFunkcije();
             if(f.getPareterTypes() != PrototipFunkcije.VOID_PARAMETER) greska();
