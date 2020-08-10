@@ -35,4 +35,18 @@ public class CastIzraz extends NezavrsniZnak {
         }
     }
 
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<cast_izraz> ::= <unarni_izraz>
+            UnarniIzraz ui = (UnarniIzraz)getChild(0);
+            return ui.parse();
+        } else {
+            //<cast_izraz> ::= L_ZAGRADA <ime_tipa> D_ZAGRADA <cast_izraz>
+            ImeTipa it = (ImeTipa)getChild(1);
+            CastIzraz ci = (CastIzraz)getChild(3);
+            return ci.parse();
+        }
+    }
+
 }

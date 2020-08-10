@@ -19,4 +19,14 @@ public class IzrazNaredba extends NezavrsniZnak {
             tip = izraz.getTip();
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            return "";
+        } else {
+            Izraz izraz = (Izraz)getChild(0);
+            return izraz.parse();
+        }
+    }
 }

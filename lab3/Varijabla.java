@@ -1,16 +1,26 @@
 import java.util.Objects;
 
 public class Varijabla {
-    private String idn;
-    private String type;
-    private int brElem;
-    private boolean lizraz;
+    protected String idn;
+    protected String type;
+    protected int brElem;
+    protected boolean lizraz;
+    protected Djelokrug pripadaDjelokrugu;
 
-    public Varijabla(String idn, String type, int brElem) {
+    public Varijabla(String idn, String type, int brElem, Djelokrug pripadaDjelokrugu) {
         this.idn = idn;
         this.type = type;
         this.brElem = brElem;
         lizraz = type.equals("char") || type.equals("int");
+        this.pripadaDjelokrugu = pripadaDjelokrugu;
+    }
+
+    public Varijabla(Varijabla var) {
+        this.idn = var.idn;
+        this.type = var.type;
+        this.brElem = var.brElem;
+        lizraz = var.lizraz;
+        this.pripadaDjelokrugu = var.pripadaDjelokrugu;
     }
 
     public int getBrElem() {
@@ -27,6 +37,10 @@ public class Varijabla {
 
     public boolean isLizraz() {
         return lizraz;
+    }
+
+    public Djelokrug getPripadaDjelokrugu() {
+        return pripadaDjelokrugu;
     }
 
     @Override

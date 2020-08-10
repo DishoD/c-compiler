@@ -16,6 +16,16 @@ public class PrijevodnaJedinica extends NezavrsniZnak {
         provjera.provjeri();
     }
 
+    @Override
+    public String parse() {
+        if(children.size() == 1) //<prijevodna_jedinica> ::= <vanjska_deklaracija>
+            return getChildAsNezavrsniZnak(0).parse();
+        else //<prijevodna_jedinica> ::= <prijevodna_jedinica> <vanjska_deklaracija>
+            getChildAsNezavrsniZnak(0).parse();
+            getChildAsNezavrsniZnak(1).parse();
+            return null;
+    }
+
     /**
      * <prijevodna_jedinica> ::= <vanjska_deklaracija>
      */

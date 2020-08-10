@@ -39,6 +39,10 @@ public final class TablicaZnakova {
         return trenutniDjelokrug;
     }
 
+    public static void setTrenutniDjelokrug(Djelokrug trenutniDjelokrug) {
+        TablicaZnakova.trenutniDjelokrug = trenutniDjelokrug;
+    }
+
     public static boolean postojiDefiniranaFunkcija(String f) {
         return definiraneFunkcije.containsKey(f);
     }

@@ -12,6 +12,7 @@ public abstract class NezavrsniZnak extends Node{
     }
 
     public abstract void provjeri();
+    public abstract String parse();
 
     public void greska() {
         StringBuilder sb = new StringBuilder();
@@ -36,6 +37,9 @@ public abstract class NezavrsniZnak extends Node{
 
     public String getNaziv() {
         return naziv;
+    }
+    public NezavrsniZnak getParent() {
+        return (NezavrsniZnak)parent;
     }
 
     @Override

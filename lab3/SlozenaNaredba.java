@@ -6,6 +6,8 @@ public class SlozenaNaredba extends  NezavrsniZnak {
 
     @Override
     public void provjeri() {
+
+
         if(children.size() == 3) {
             // <slozena_naredba> ::= L_VIT_ZAGRADA <lista_naredbi> D_VIT_ZAGRADA
             ((NezavrsniZnak)getChild(1)).provjeri();
@@ -13,6 +15,17 @@ public class SlozenaNaredba extends  NezavrsniZnak {
             //<slozena_naredba> ::= L_VIT_ZAGRADA <lista_deklaracija> <lista_naredbi> D_VIT_ZAGRADA
             ((NezavrsniZnak)getChild(1)).provjeri();
             ((NezavrsniZnak)getChild(2)).provjeri();
+        }
+    }
+
+    @Override
+    public String parse() {
+        if(children.size() == 3) {
+            // <slozena_naredba> ::= L_VIT_ZAGRADA <lista_naredbi> D_VIT_ZAGRADA
+            return ((NezavrsniZnak)getChild(1)).parse();
+        } else {
+            //<slozena_naredba> ::= L_VIT_ZAGRADA <lista_deklaracija> <lista_naredbi> D_VIT_ZAGRADA
+            return ((NezavrsniZnak)getChild(1)).parse() + ((NezavrsniZnak)getChild(2)).parse();
         }
     }
 }

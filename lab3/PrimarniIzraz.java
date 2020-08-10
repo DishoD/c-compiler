@@ -112,4 +112,65 @@ public class PrimarniIzraz extends NezavrsniZnak {
             lizraz = izraz.isLizraz();
         }
     }
+
+    @Override
+    public String parse() {
+        //ne koristiti
+        return null;
+    }
+
+    public String parseValue() {
+        StringBuilder sb = new StringBuilder();
+
+        if(children.size() == 1) {
+            String token = getChildAsUniformniZnak(0).getToken();
+            String znak = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+
+            if(token.equals("IDN")) {
+                //<primarni_izraz> ::= IDN
+                if(TipoviUtility.isArray(tip)) return this.parseAddress();
+
+                sb.append(this.parseAddress()).append(GeneratorKoda.dereferenceAddresse());
+                return sb.toString();
+            } else if(token.equals("BROJ")) {
+                int k;
+                if(znak.startsWith("0x") || znak.startsWith("0X")) {
+                    k = Integer.parseInt(znak.substring(2), 16);
+                } else {
+                    k = Integer.parseInt(znak);
+                }
+                return GeneratorKoda.pushConstant(k);
+            } else if(token.equals("ZNAK")) {
+                znak = znak.substring(1, znak.length()-1);
+                char c = znak.charAt(0);
+                return GeneratorKoda.pushConstant(c);
+            } else if(token.equals("NIZ_ZNAKOVA")) {
+                ////<primarni_izraz> ::= NIZ_ZNAKOVA
+                return this.parseAddress();
+            }
+
+        } else {
+            Izraz izraz = (Izraz)getChild(1);
+            return izraz.parse();
+        }
+        return null;
+    }
+
+    public String parseAddress() {
+        if(children.size() == 1) {
+            String token = getChildAsUniformniZnak(0).getToken();
+            String znak = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+
+            if(token.equals("IDN")) {
+                //<primarni_izraz> ::= IDN
+                return GeneratorKoda.getVarReference(znak, TablicaZnakova.getTrenutniDjelokrug());
+            } else if(token.equals("NIZ_ZNAKOVA")) {
+                ////<primarni_izraz> ::= NIZ_ZNAKOVA
+                znak = znak.substring(1, znak.length()-1);
+                return GeneratorKoda.pushStringReference(znak);
+            }
+        }
+
+        return null;
+    }
 }

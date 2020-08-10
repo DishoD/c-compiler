@@ -47,6 +47,76 @@ public class PostfiksIzraz extends NezavrsniZnak {
         provjera.provjeri();
     }
 
+    @Override
+    public String parse() {
+        //ne koristiti
+        return null;
+    }
+
+    public String parseValue() {
+        StringBuilder sb = new StringBuilder();
+
+        if(children.size() == 1) {
+            //<postfiks_izraz> ::= <primarni_izraz>
+            PrimarniIzraz pi = (PrimarniIzraz)getChild(0);
+            return pi.parseValue();
+        } else if(children.size() == 2) {
+            //<postfiks_izraz> ::= <postfiks_izraz> (OP_INC | OP_DEC)
+            PostfiksIzraz pi = (PostfiksIzraz)getChild(0);
+            sb.append(pi.parseAddress());
+
+            String op = getChildAsUniformniZnak(1).getToken();
+            if(op.equals("OP_INC")) {
+                sb.append(GeneratorKoda.opPostINC());
+            } else {
+                sb.append(GeneratorKoda.opPostDEC());
+            }
+            return sb.toString();
+
+        } else if(children.size() == 3) {
+            //<postfiks_izraz> ::= <postfiks_izraz> L_ZAGRADA D_ZAGRADA
+            String fidn = ((PrimarniIzraz)(getChild(0).getChild(0))).getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+            return GeneratorKoda.functionCall(fidn);
+        } else {
+            String s = getChildAsUniformniZnak(1).getToken();
+            if(s.equals("L_UGL_ZAGRADA")) {
+                //<postfiks_izraz> ::= <postfiks_izraz> L_UGL_ZAGRADA <izraz> D_UGL_ZAGRADA
+                sb.append(this.parseAddress()).append(GeneratorKoda.dereferenceAddresse());
+                return sb.toString();
+            } else {
+                //<postfiks_izraz> ::= <postfiks_izraz> L_ZAGRADA <lista_argumenata> D_ZAGRADA
+                ListaArgumenata la = (ListaArgumenata)getChild(2);
+                String fidn = ((PrimarniIzraz)(getChild(0).getChild(0))).getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+                sb.append(la.parse()).append(GeneratorKoda.functionCall(fidn));
+                return sb.toString();
+            }
+        }
+    }
+
+    public String parseAddress() {
+        StringBuilder sb = new StringBuilder();
+
+        if(children.size() == 1) {
+            //<postfiks_izraz> ::= <primarni_izraz>
+            PrimarniIzraz pi = (PrimarniIzraz)getChild(0);
+            return pi.parseAddress();
+        } else {
+            String s = getChildAsUniformniZnak(1).getToken();
+            if(s.equals("L_UGL_ZAGRADA")) {
+                //<postfiks_izraz> ::= <postfiks_izraz> L_UGL_ZAGRADA <izraz> D_UGL_ZAGRADA
+                PostfiksIzraz pi = (PostfiksIzraz)getChild(0);
+                Izraz izraz = (Izraz) getChild(2);
+                sb.append(pi.parseAddress())
+                        .append(izraz.parse())
+                        .append(GeneratorKoda.pushConstant(4))
+                        .append(GeneratorKoda.opMUL())
+                        .append(GeneratorKoda.opAdd());
+                return sb.toString();
+            }
+        }
+        return null;
+    }
+
     /**
      * <postfiks_izraz> ::= <primarni_izraz>
      */

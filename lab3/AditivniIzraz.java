@@ -37,4 +37,28 @@ public class AditivniIzraz extends NezavrsniZnak {
             lizraz = false;
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            // <aditivni_izraz> ::= <multiplikativni_izraz>
+            MultiplikativniIzraz mi = (MultiplikativniIzraz)getChild(0);
+            return mi.parse();
+        } else {
+            // <aditivni_izraz> ::= <aditivni_izraz> (PLUS | MINUS) <multiplikativni_izraz>
+            AditivniIzraz ai = (AditivniIzraz)getChild(0);
+            MultiplikativniIzraz mi = (MultiplikativniIzraz)getChild(2);
+            StringBuilder sb =  new StringBuilder();
+            sb.append(ai.parse()).append(mi.parse());
+
+            String op = getChildAsUniformniZnak(1).getToken();
+
+            if(op.equals("PLUS")) {
+                sb.append(GeneratorKoda.opAdd());
+            } else {
+                sb.append(GeneratorKoda.opSub());
+            }
+            return sb.toString();
+        }
+    }
 }

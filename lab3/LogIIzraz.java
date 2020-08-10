@@ -35,4 +35,19 @@ public class LogIIzraz extends NezavrsniZnak {
             lizraz = false;
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<log_i_izraz> ::= <bin_ili_izraz>
+            BinIliIzraz bili = (BinIliIzraz)getChild(0);
+            return bili.parse();
+        } else {
+            //<log_i_izraz> ::= <log_i_izraz> OP_I <bin_ili_izraz>
+            LogIIzraz logi = (LogIIzraz)getChild(0);
+            BinIliIzraz binili = (BinIliIzraz)getChild(2);
+            return  GeneratorKoda.logIIzraz(logi.parse(), binili.parse());
+        }
+
+    }
 }

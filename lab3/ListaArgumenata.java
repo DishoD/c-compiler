@@ -28,4 +28,20 @@ public class ListaArgumenata extends NezavrsniZnak {
             tipovi.add(ip.getTip());
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<lista_argumenata> ::= <izraz_pridruzivanja>
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(0);
+            return  ip.parse();
+        } else {
+            //<lista_argumenata> ::= <lista_argumenata> ZAREZ <izraz_pridruzivanja>
+            ListaArgumenata la = (ListaArgumenata)getChild(0);
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(2);
+            StringBuilder sb = new StringBuilder();
+            sb.append(la.parse()).append(ip.parse());
+            return sb.toString();
+        }
+    }
 }

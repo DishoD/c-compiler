@@ -18,6 +18,12 @@ public class ImeTipa extends NezavrsniZnak {
         return tip;
     }
 
+    @Override
+    public String parse() {
+        //TODO
+        return null;
+    }
+
     /**
      * <ime_tipa> ::= <specifikator_tipa>
      */

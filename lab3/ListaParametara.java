@@ -26,6 +26,12 @@ public class ListaParametara extends NezavrsniZnak {
         return imena;
     }
 
+    @Override
+    public String parse() {
+        //TODO
+        return null;
+    }
+
     /**
      * <lista_parametara> ::= <deklaracija_parametra>
      */

@@ -8,18 +8,35 @@ public class Djelokrug extends Node {
     private Map<String, Varijabla> deklariraneVarijable = new HashMap<>();
     private Map<String, PrototipFunkcije> deklariraneFunkcije = new HashMap<>();
 
+    /**
+     * zapocinje sa 4 zato sto se na vrhu stoga na pocetku nalazi povratna adresa ako se radi o funkciji
+     * ili stara vrijednost vrha stoga (R5) ako se radi o bloku
+     */
+    private static final int POCETNA_VELICINA_STOGA = 4;
+
+    private int velicina = 0;
+    private int brojLokalnihVarijabli = 0;
+    private int brojParametaraFunkcije = 0;
+
     private final Oznaka oznaka;
     private final PrototipFunkcije pripadaFunkciji;
 
     public Djelokrug(Node parent, Oznaka oznaka, PrototipFunkcije pripadaFunkciji) {
         super(parent);
-        Objects.nonNull(oznaka);
         this.oznaka = oznaka;
         this.pripadaFunkciji = pripadaFunkciji;
 
         if(oznaka == Oznaka.FUNKCIJA && pripadaFunkciji == null) {
             throw new RuntimeException("Ako se stvara djelokrug funkcije, mora se odrediti kojoj funkciji pripada");
         }
+    }
+
+    public int getBrojParametaraFunkcije() {
+        return brojParametaraFunkcije;
+    }
+
+    public void setBrojParametaraFunkcije(int brojParametaraFunkcije) {
+        this.brojParametaraFunkcije = brojParametaraFunkcije;
     }
 
     public Map<String, PrototipFunkcije> getDeklariraneFunkcije() {
@@ -39,6 +56,22 @@ public class Djelokrug extends Node {
         return res;
     }
 
+    public int getBrojLokalnihVarijabli() {
+        return brojLokalnihVarijabli;
+    }
+
+    public void setBrojLokalnihVarijabli(int brojLokalnihVarijabli) {
+        this.brojLokalnihVarijabli = brojLokalnihVarijabli;
+    }
+
+    public int getVelicina() {
+        return velicina;
+    }
+
+    public void setVelicina(int velicina) {
+        this.velicina = velicina;
+    }
+
     public Djelokrug getParent() {
         return (Djelokrug)parent;
     }
@@ -51,8 +84,19 @@ public class Djelokrug extends Node {
         return pripadaFunkciji;
     }
 
-    public void dodajVarijablu(Varijabla var) {
-        deklariraneVarijable.put(var.getIdn(), var);
+    public void dodajVarijablu(String idn, String type, int brElem) {
+        if(oznaka == Oznaka.GLOBALNI_DJELOKRUG) {
+            deklariraneVarijable.put(idn, new GloblnaVarijabla(idn, type, brElem, this));
+        } else if(oznaka == Oznaka.FUNKCIJA) {
+            int l = pripadaFunkciji.getPareterTypes().size();
+            if (l > brojParametaraFunkcije) {
+                deklariraneVarijable.put(idn, new ParamaterVarijabla(idn, type, brElem, this));
+            } else {
+                deklariraneVarijable.put(idn, new StogVarijabla(idn, type, brElem, this));
+            }
+        } else {
+            deklariraneVarijable.put(idn, new StogVarijabla(idn, type, brElem, this));
+        }
     }
 
     public void dodajDeklaracijuFunkcije(PrototipFunkcije f) {
@@ -75,6 +119,10 @@ public class Djelokrug extends Node {
         return  deklariraneFunkcije.get(f);
     }
 
+    public Collection<Varijabla> getVarijable() {
+        return deklariraneVarijable.values();
+    }
+
     public Djelokrug getDjelokrugOfVariable(String idn) {
         Djelokrug d = this;
         while(d != null) {
@@ -91,5 +139,9 @@ public class Djelokrug extends Node {
             d = d.getParent();
         }
         return d;
+    }
+
+    public static int getPocetnaVelicinaStoga() {
+        return POCETNA_VELICINA_STOGA;
     }
 }

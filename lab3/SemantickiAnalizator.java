@@ -34,6 +34,9 @@ public class SemantickiAnalizator {
                 }
             }
         }
+
+        TablicaZnakova.setTrenutniDjelokrug(TablicaZnakova.getGlobalniDjelokrug());
+        root.parse();
     }
 
     private static NezavrsniZnak parseInput(BufferedReader input) throws IOException {

@@ -23,6 +23,12 @@ public class DeklaracijaParametra extends NezavrsniZnak {
         return ime;
     }
 
+    @Override
+    public String parse() {
+        //TODO
+        return null;
+    }
+
     /**
      * <deklaracija_parametra> ::= <ime_tipa> IDN
      */

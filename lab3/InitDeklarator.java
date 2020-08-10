@@ -22,6 +22,46 @@ public class InitDeklarator extends NezavrsniZnak {
         provjera.provjeri();
     }
 
+    @Override
+    public String parse() {
+        //<init_deklarator> ::= <izravni_deklarator>
+        if(children.size() == 1) return "";
+
+        //<init_deklarator> ::= <izravni_deklarator> OP_PRIDRUZI <inicijalizator>
+        IzravniDeklarator id = (IzravniDeklarator)getChild(0);
+        Inicijalizator init = (Inicijalizator)getChild(2);
+        StringBuilder sb = new StringBuilder();
+
+        if(init.isCharArray()) {
+            sb.append(init.parse())
+                    .append(id.parse())
+                    .append(GeneratorKoda.pushConstant(init.getBrElem()))
+                    .append(GeneratorKoda.copyArray());
+
+            return sb.toString();
+        }
+
+
+        if(init.getBrElem() == 1) {
+            String t = TipoviUtility.getT(init.getTip());
+            if(t.equals("int") || t.equals("char")) {
+                sb.append(id.parse())
+                        .append(init.parse())
+                        .append(GeneratorKoda.varAssign());
+                return sb.toString();
+            }
+        }
+
+        sb.append(init.parse())
+                .append(GeneratorKoda.pushRegister("R7"))
+                .append(id.parse())
+                .append(GeneratorKoda.pushConstant(init.getBrElem()))
+                .append(GeneratorKoda.copyArray())
+                .append(GeneratorKoda.freeMemoryOnStack(init.getBrElem() * 4));
+
+        return sb.toString();
+    }
+
     /**
      * <init_deklarator> ::= <izravni_deklarator>
      */

@@ -15,4 +15,15 @@ public class ListaNaredbi extends NezavrsniZnak {
             ((NezavrsniZnak)getChild(1)).provjeri();
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<lista_naredbi> ::= <naredba>
+            return ((NezavrsniZnak)getChild(0)).parse();
+        } else {
+            //<lista_naredbi> ::= <lista_naredbi> <naredba>
+            return ((NezavrsniZnak)getChild(0)).parse() + ((NezavrsniZnak)getChild(1)).parse();
+        }
+    }
 }

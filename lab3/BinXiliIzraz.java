@@ -35,4 +35,22 @@ public class BinXiliIzraz extends NezavrsniZnak {
             lizraz = false;
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<bin_xili_izraz> ::= <bin_i_izraz>
+            BinIIzraz bi = (BinIIzraz)getChild(0);
+            return bi.parse();
+        } else {
+            //<bin_xili_izraz> ::= <bin_xili_izraz> OP_BIN_XILI <bin_i_izraz>
+            BinXiliIzraz bxili = (BinXiliIzraz)getChild(0);
+            BinIIzraz bi = (BinIIzraz)getChild(2);
+            StringBuilder sb = new StringBuilder();
+            sb.append(bxili.parse())
+                    .append(bi.parse())
+                    .append(GeneratorKoda.opBinXIli());
+            return sb.toString();
+        }
+    }
 }

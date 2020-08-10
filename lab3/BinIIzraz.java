@@ -35,4 +35,22 @@ public class BinIIzraz extends NezavrsniZnak {
             lizraz = false;
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<bin_i_izraz> ::= <jednakosni_izraz>
+            JednakosniIzraz ji = (JednakosniIzraz)getChild(0);
+            return ji.parse();
+        } else {
+            //<bin_i_izraz> ::= <bin_i_izraz> OP_BIN_I <jednakosni_izraz>
+            BinIIzraz bi = (BinIIzraz)getChild(0);
+            JednakosniIzraz ji = (JednakosniIzraz)getChild(2);
+            StringBuilder sb = new StringBuilder();
+            sb.append(bi.parse())
+                    .append(ji.parse())
+                    .append(GeneratorKoda.opBinI());
+            return sb.toString();
+        }
+    }
 }

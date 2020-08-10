@@ -1,4 +1,5 @@
 public class DefinicijaFunkcije extends NezavrsniZnak {
+    private Djelokrug djelokrugFuncije;
 
     public DefinicijaFunkcije(Node parent) {
         super(parent, "<definicija_funkcije>");
@@ -11,6 +12,31 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
         }
 
         provjera.provjeri();
+    }
+
+
+    public String parse() {
+        Djelokrug izvorni = TablicaZnakova.getTrenutniDjelokrug();
+        TablicaZnakova.setTrenutniDjelokrug(djelokrugFuncije);
+        PrototipFunkcije f = djelokrugFuncije.getPripadaFunkciji();
+        String labela = f.getIdn();
+        SlozenaNaredba sn = ((SlozenaNaredba)getChild(5));
+
+        StringBuilder sb = new StringBuilder();
+        sb      .append(labela)
+                .append(GeneratorKoda.pushScope(djelokrugFuncije))
+                .append(sn.parse());
+
+        if(f.getReturnType().equals("void")) {
+            sb.append(GeneratorKoda.popScope(djelokrugFuncije))
+                    .append(" RET\n");
+        }
+
+        GeneratorKoda.addFunctionCode(sb.toString());
+        TablicaZnakova.setTrenutniDjelokrug(izvorni);
+
+
+        return null;
     }
 
     /**
@@ -35,6 +61,7 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             TablicaZnakova.dodajDefiniranuFunkciju(f);
 
             TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.FUNKCIJA, f);
+            djelokrugFuncije = TablicaZnakova.getTrenutniDjelokrug();
             ((NezavrsniZnak)getChild(5)).provjeri();
             TablicaZnakova.vratiSe();
         }
@@ -65,11 +92,12 @@ public class DefinicijaFunkcije extends NezavrsniZnak {
             TablicaZnakova.dodajDefiniranuFunkciju(f);
 
             TablicaZnakova.stvoriNoviDjelokrug(Djelokrug.Oznaka.FUNKCIJA, f);
+            djelokrugFuncije = TablicaZnakova.getTrenutniDjelokrug();
             Djelokrug trenutniDjelokrug = TablicaZnakova.getTrenutniDjelokrug();
             for (int i = 0; i < parametri.getImena().size(); ++i) {
                 String idn = parametri.getImena().get(i);
                 String type = parametri.getTipovi().get(i);
-                trenutniDjelokrug.dodajVarijablu(new Varijabla(idn, type, -1));
+                trenutniDjelokrug.dodajVarijablu(idn, type, -1);
             }
             ((NezavrsniZnak)getChild(5)).provjeri();
             TablicaZnakova.vratiSe();

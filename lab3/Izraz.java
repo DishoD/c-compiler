@@ -33,4 +33,13 @@ public class Izraz extends  NezavrsniZnak {
         }
     }
 
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<izraz> ::= <izraz_pridruzivanja>
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(0);
+            return ip.parse();
+        }
+        return null;
+    }
 }

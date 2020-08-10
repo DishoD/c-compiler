@@ -8,4 +8,10 @@ public class UnarniOperator extends NezavrsniZnak {
     public void provjeri() {
         //nema semanticne provjere
     }
+
+    @Override
+    public String parse() {
+        //TODO
+        return null;
+    }
 }

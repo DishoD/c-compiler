@@ -32,4 +32,18 @@ public class ListaInitDeklaratora extends NezavrsniZnak {
             id.provjeri();
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<lista_init_deklaratora> ::= <init_deklarator>
+            InitDeklarator id = (InitDeklarator)getChild(0);
+            return  id.parse();
+        } else {
+            //<lista_init_deklaratora>1 ::= <lista_init_deklaratora>2 ZAREZ <init_deklarator>
+            ListaInitDeklaratora lid = (ListaInitDeklaratora)getChild(0);
+            InitDeklarator id = (InitDeklarator)getChild(2);
+            return  lid.parse() + id.parse();
+        }
+    }
 }

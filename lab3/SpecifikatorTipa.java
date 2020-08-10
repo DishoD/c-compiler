@@ -10,6 +10,12 @@ public class SpecifikatorTipa extends NezavrsniZnak {
         this.tip = ((UniformniZnak)getChild(0)).getGrupiraniZnakovi();
     }
 
+    @Override
+    public String parse() {
+        //TODO
+        return null;
+    }
+
     public String getTip() {
         return tip;
     }

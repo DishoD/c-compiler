@@ -35,4 +35,29 @@ public class JednakosniIzraz extends NezavrsniZnak {
             lizraz = false;
         }
     }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<jednakosni_izraz> ::= <odnosni_izraz>
+            OdnosniIzraz oi = (OdnosniIzraz)getChild(0);
+            return  oi.parse();
+        } else {
+            JednakosniIzraz ji = (JednakosniIzraz)getChild(0);
+            OdnosniIzraz oi = (OdnosniIzraz)getChild(2);
+            StringBuilder sb = new StringBuilder();
+            sb.append(ji.parse()).append(oi.parse());
+
+            String op = getChildAsUniformniZnak(1).getToken();
+            if(op.equals("OP_EQ")) {
+                //<jednakosni_izraz> ::= <jednakosni_izraz> OP_EQ <odnosni_izraz>
+                sb.append(GeneratorKoda.opEq());
+            } else {
+                //<jednakosni_izraz> ::= <jednakosni_izraz> OP_NEQ <odnosni_izraz>
+                sb.append(GeneratorKoda.opNe());
+            }
+
+            return sb.toString();
+        }
+    }
 }

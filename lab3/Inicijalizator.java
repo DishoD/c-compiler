@@ -4,7 +4,7 @@ import java.util.List;
 public class Inicijalizator extends NezavrsniZnak {
     private String tip;
     private boolean isCharArray;
-    private int brElem;
+    private int brElem = 1;
     private List<String> tipovi = new ArrayList<>();
 
     public Inicijalizator(Node parent) {
@@ -71,6 +71,17 @@ public class Inicijalizator extends NezavrsniZnak {
 
             brElem = lip.getBrElem();
             tipovi = lip.getTipovi();
+        }
+    }
+
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            IzrazPridruzivanja ip = (IzrazPridruzivanja)getChild(0);
+            return ip.parse();
+        } else {
+            ListaIzrazaPridruzivanja lip = (ListaIzrazaPridruzivanja)getChild(1);
+            return lip.parse();
         }
     }
 }

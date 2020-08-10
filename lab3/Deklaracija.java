@@ -13,4 +13,9 @@ public class Deklaracija extends NezavrsniZnak {
         lid.setNtip(imeTipa.getTip());
         lid.provjeri();
     }
+
+    @Override
+    public String parse() {
+        return getChildAsNezavrsniZnak(1).parse();
+    }
 }

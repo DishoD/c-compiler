@@ -50,6 +50,20 @@ public class IzravniDeklarator extends NezavrsniZnak {
         provjera.provjeri();
     }
 
+    @Override
+    public String parse() {
+        if(children.size() == 1) {
+            //<izravni_deklarator> ::= IDN
+            String znak = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+            return GeneratorKoda.getVarReference(znak, TablicaZnakova.getTrenutniDjelokrug());
+        } else if(getChildAsUniformniZnak(1).getToken().equals("L_UGL_ZAGRADA")) {
+            //<izravni_deklarator> ::= IDN L_UGL_ZAGRADA BROJ D_UGL_ZAGRADA
+            String znak = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
+            return GeneratorKoda.getVarReference(znak, TablicaZnakova.getTrenutniDjelokrug());
+        }
+        return null;
+    }
+
     /**
      * <izravni_deklarator> ::= IDN
      */
@@ -61,7 +75,7 @@ public class IzravniDeklarator extends NezavrsniZnak {
             String idn = getChildAsUniformniZnak(0).getGrupiraniZnakovi();
             Djelokrug d = TablicaZnakova.getTrenutniDjelokrug();
             if(d.postojiVarijabla(idn) || d.postojiFunkcija(idn)) greska();
-            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(new Varijabla(idn, ntip, -1));
+            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(idn, ntip, -1);
             tip = ntip;
         }
     }
@@ -84,7 +98,7 @@ public class IzravniDeklarator extends NezavrsniZnak {
                 greska();
             }
             if(vr <= 0 || vr > 1024) greska();
-            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(new Varijabla(idn, TipoviUtility.toArray(ntip), vr));
+            TablicaZnakova.getTrenutniDjelokrug().dodajVarijablu(idn, TipoviUtility.toArray(ntip), vr);
 
             tip = TipoviUtility.toArray(ntip);
             brElem = vr;
